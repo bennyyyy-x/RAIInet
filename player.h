@@ -10,7 +10,7 @@ class Player {
     vector<Ability> cards;
 
 public:
-    Player()
+
 };
 
 #endif // PLAYER_H_
