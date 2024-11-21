@@ -12,6 +12,7 @@ public:
     char getChar() const;
     void setChar(char c);
     void setFirewall(int f);
+    bool isEmpty() const;
 };
 
 #endif // TILE_H_
