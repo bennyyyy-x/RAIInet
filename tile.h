@@ -15,4 +15,4 @@ public:
     bool isEmpty() const;
 };
 
-#endif // TILE_H_
+#endif TILE_H_
