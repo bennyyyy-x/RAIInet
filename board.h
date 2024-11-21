@@ -3,7 +3,11 @@
 
 #include <memory>
 #include <vector>
+#include <string>
 #include "display.h"
+#include "constants.h"
+#include "tile.h"
+#include "link.h"
 
 using namespace std;
 
@@ -20,7 +24,14 @@ public:
 };
 
 class Board : public Subject {
+    vector<vector<Tile>> tiles;
+    vector<Link> link1;
+    vector<Link> link2;
 
+public:
+    // Sample string for link1/link2: "V1 D4 V3 V2 D3 V4 D2 D1"
+    // Randomize the order if not given
+    Board(string link1 = "", string link2 = "");
 };
 
 #endif // BOARD_H_
