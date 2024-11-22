@@ -32,6 +32,13 @@ public:
     // Sample string for link1/link2: "V1 D4 V3 V2 D3 V4 D2 D1"
     // Randomize the order if not given
     Board(string link1_string = "", string link2_string = "");
+
+    pair<int, int> getCoords(char link);
+
+    void move (char link, int dir);
+    void battle (char link1, char link2); //what should this return???
+    bool isEmpty (int x, int y);
+    void render() const;
 };
 
 #endif // BOARD_H_

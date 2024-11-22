@@ -59,3 +59,20 @@ Board::Board(string link1_string, string link2_string) : tiles{board_width, vect
 
     // TODO Unfinished
 }
+
+pair<int, int> Board::getCoords(char link) {
+    if (isupper(link)) {
+        return {link2[link - 'A'].getX(), link2[link - 'A'].getY()};
+    } 
+    return {link1[link - 'a'].getX(), link1[link - 'a'].getY()};
+}
+
+bool Board::isEmpty(int x, int y) {
+    return tiles[x][y].isEmpty();
+}
+
+void Board::move(char link, int dir) {
+    if (isupper(link)) {
+        
+    }
+}
