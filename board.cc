@@ -61,18 +61,57 @@ Board::Board(string link1_string, string link2_string) : tiles{board_width, vect
 }
 
 pair<int, int> Board::getCoords(char link) {
-    if (isupper(link)) {
-        return {link2[link - 'A'].getX(), link2[link - 'A'].getY()};
+    if (islower(link)) {
+        return {link1[link - 'a'].getX(), link1[link - 'a'].getY()};
     } 
-    return {link1[link - 'a'].getX(), link1[link - 'a'].getY()};
+    return {link2[link - 'A'].getX(), link2[link - 'A'].getY()};
 }
 
 bool Board::isEmpty(int x, int y) {
     return tiles[x][y].isEmpty();
 }
 
+//add error checking?? or add in if statements so if 
+//link moves outside board or on server ports dont do anything?
+//also remmeber to add in input error checking for link chars
 void Board::move(char link, int dir) {
-    if (isupper(link)) {
-        
+    pair<int, int> coords = getCoords(link);
+    if (islower(link)) {
+        switch (dir) {
+            case 0: //up
+                link1[link - 'a'].setY(coords.second + 1); break;
+            case 1: //right
+                link1[link - 'a'].setX(coords.first + 1); break;
+            case 2: //down
+                link1[link - 'a'].setY(coords.first - 1); break;
+            case 3: //left
+                link1[link - 'a'].setX(coords.second - 1); break;
+        }
+    } else {
+        switch (dir) { //THIS IS NOT VERY EFFICIENT????
+            case 0: //up
+                link2[link - 'A'].setY(coords.second + 1); break;
+            case 1: //right
+                link2[link - 'A'].setX(coords.first + 1); break;
+            case 2: //down
+                link2[link - 'A'].setY(coords.first - 1); break;
+            case 3: //left
+                link2[link - 'A'].setX(coords.second - 1); break;
+        }
     }
+}
+
+int Board::battle(char l1, char l2, int initiator) {
+    link1[l1 - 'a'].reveal();
+    link2[l2 - 'A'].reveal();
+
+    int st1 = link1[l1 - 'a'].getStrength();
+    int st2 = link2[l1 - 'A'].getStrength();
+    if (st1 == st2) {
+        return initiator;
+    }
+    if (st1 > st2) {
+        return 1;
+    }
+    return 2;
 }
