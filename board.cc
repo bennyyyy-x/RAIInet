@@ -35,3 +35,20 @@ Board::Board(string link1, string link2) : tiles{board_width, vector<Tile>(8)} {
 
     
 }
+
+pair<int, int> Board::getCoords(char link) {
+    if (isupper(link)) {
+        return {link2[link - 'A'].getX(), link2[link - 'A'].getY()};
+    } 
+    return {link1[link - 'a'].getX(), link1[link - 'a'].getY()};
+}
+
+bool Board::isEmpty(int x, int y) {
+    return tiles[x][y].isEmpty();
+}
+
+void Board::move(char link, int dir) {
+    if (isupper(link)) {
+        
+    }
+}
