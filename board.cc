@@ -49,7 +49,7 @@ Board::Board(string link1_string, string link2_string) : tiles{board_width, vect
     istringstream iss2{link2_string};
     char c = 'A';
     while (iss2 >> link) {
-        int x = c - 'a', y = 7;
+        int x = c - 'A', y = 7;
         if (c == 'D' || c == 'E') {
             y = 1;
         }
@@ -71,33 +71,14 @@ bool Board::isEmpty(int x, int y) {
     return tiles[x][y].isEmpty();
 }
 
-//add error checking?? or add in if statements so if 
-//link moves outside board or on server ports dont do anything?
-//also remmeber to add in input error checking for link chars
-void Board::move(char link, int dir) {
-    pair<int, int> coords = getCoords(link);
+// add error checking?? or add in if statements so if 
+// link moves outside board or on server ports dont do anything?
+// also remmeber to add in input error checking for link chars
+void Board::move(char link, Direction dir) {
     if (islower(link)) {
-        switch (dir) {
-            case 0: //up
-                link1[link - 'a'].setY(coords.second + 1); break;
-            case 1: //right
-                link1[link - 'a'].setX(coords.first + 1); break;
-            case 2: //down
-                link1[link - 'a'].setY(coords.first - 1); break;
-            case 3: //left
-                link1[link - 'a'].setX(coords.second - 1); break;
-        }
+        link1[link - 'a'].move(dir);
     } else {
-        switch (dir) { //THIS IS NOT VERY EFFICIENT????
-            case 0: //up
-                link2[link - 'A'].setY(coords.second + 1); break;
-            case 1: //right
-                link2[link - 'A'].setX(coords.first + 1); break;
-            case 2: //down
-                link2[link - 'A'].setY(coords.first - 1); break;
-            case 3: //left
-                link2[link - 'A'].setX(coords.second - 1); break;
-        }
+        link2[link - 'A'].move(dir);
     }
 }
 

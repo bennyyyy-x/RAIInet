@@ -35,7 +35,7 @@ public:
 
     pair<int, int> getCoords(char link);
 
-    void move (char link, int dir);
+    void move (char link, Direction dir);
     int battle (char l1, char l2, int initiator); //what should this return???
     bool isEmpty (int x, int y);
     void render() const;

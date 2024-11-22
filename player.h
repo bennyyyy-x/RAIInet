@@ -10,7 +10,7 @@ class Player {
     vector<Ability> cards;
 
 public:
-
+    void download(const Link &l);
 };
 
 #endif // PLAYER_H_
