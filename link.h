@@ -24,6 +24,7 @@ public:
     bool getBoost() const;
     int getX() const;
     int getY() const;
+    
     //setters
     void setStrength(int s);
     void setX(int x);

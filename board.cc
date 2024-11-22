@@ -2,6 +2,7 @@
 #include <string>
 #include <algorithm>
 #include <random>
+#include <sstream>
 #include "board.h"
 #include "constants.h"
 
@@ -25,13 +26,36 @@ string getRandomLinks() {
     return ans;
 }
 
-Board::Board(string link1, string link2) : tiles{board_width, vector<Tile>(8)} {
-    if (link1 == "") {
-        link1 = getRandomLinks();
+Board::Board(string link1_string, string link2_string) : tiles{board_width, vector<Tile>(board_width)} {
+    if (link1_string == "") {
+        link1_string = getRandomLinks();
     }
-    if (link2 == "") {
-        link2 = getRandomLinks();
+    if (link2_string == "") {
+        link2_string = getRandomLinks();
     }
 
-    
+    istringstream iss1{link1_string};
+    string link;
+    char c = 'a';
+    while (iss1 >> link) {
+        int x = c - 'a', y = 7;
+        if (c == 'd' || c == 'e') {
+            y = 6;
+        }
+        link1.push_back(Link{c, int(link[1]), link[0] == 'D', x, y});
+        c = char(c + 1);
+    }
+
+    istringstream iss2{link2_string};
+    char c = 'A';
+    while (iss2 >> link) {
+        int x = c - 'a', y = 7;
+        if (c == 'D' || c == 'E') {
+            y = 1;
+        }
+        link2.push_back(Link{c, int(link[1]), link[0] == 'D', x, y});
+        c = char(c + 1);
+    }
+
+    // TODO Unfinished
 }

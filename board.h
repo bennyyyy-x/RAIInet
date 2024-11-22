@@ -31,7 +31,7 @@ class Board : public Subject {
 public:
     // Sample string for link1/link2: "V1 D4 V3 V2 D3 V4 D2 D1"
     // Randomize the order if not given
-    Board(string link1 = "", string link2 = "");
+    Board(string link1_string = "", string link2_string = "");
 };
 
 #endif // BOARD_H_

@@ -2,3 +2,5 @@
 *.d
 project
 .vscode
+a.out
+test.cc
