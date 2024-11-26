@@ -35,8 +35,6 @@ public:
     // Randomize the order if not given
     Board(string link1_string = "", string link2_string = "");
 
-    pair<int, int> getCoords(char link);
-
     void move(char link, Direction dir);
     //TODO: what should this return???
     void battle(char l1, char l2, int initiator);
@@ -44,9 +42,11 @@ public:
     void render() const;
     void download(DownloadStatus status, const Link& link);
 
-    Tile& getTile(int x, int y);
+    pair<int, int> getCoords(char link) const;
     Player& getPlayer1();
     Player& getPlayer2();
+    Link& getLink(char link);
+    Tile& getTile(int x, int y);
 };
 
 #endif // BOARD_H_

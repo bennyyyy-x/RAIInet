@@ -11,7 +11,6 @@ char Tile::getChar() const {
     }
     return 'w';
 }
-
-void Tile::setChar(char c) { c = c; }
-void Tile::setFirewall(int f) { firewall = f; }
 bool Tile::isEmpty() const { return c == '.'; }
+void Tile::setChar(char new_c) { c = new_c; }
+void Tile::setFirewall(int f) { firewall = f; }

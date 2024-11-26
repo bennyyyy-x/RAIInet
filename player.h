@@ -16,6 +16,7 @@ public:
     Player(string abilities);
     void printAbility();
     void download(const Link& link);
+    int getNumAbilities() const;
     int getData() const;
     int getVirus() const;
 };

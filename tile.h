@@ -10,9 +10,9 @@ class Tile {
 public:
     Tile(char c = '.', int firewall = 0);
     char getChar() const;
-    void setChar(char c);
-    void setFirewall(int f);
     bool isEmpty() const;
+    void setChar(char new_c);
+    void setFirewall(int f);
 };
 
 #endif TILE_H_

@@ -12,6 +12,10 @@ void Player::download(const Link& link) {
     }
 }
 
+int Player::getNumAbilities() const {
+    return cards.size();
+}
+
 int Player::getData() const {
     return data;
 }

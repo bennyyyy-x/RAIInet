@@ -2,17 +2,20 @@
 #define DISPLAY_H_
 #include "board.h"
 #include "window.h"
+#include <memory>
+
+using namespace std;
 
 class Observer {
     public:
-        virtual void notify() = 0;
+        virtual void notify(int players_turn) = 0;
 };
 
 class TextDisplay : public Observer {
-    Board *b;
+    shared_ptr<Board> b;
     public:
         //TODO make ctor
-        void notify() override;
+        void notify(int players_turn) override;
 };
 
 class Graphical :  public Observer {
@@ -20,7 +23,7 @@ class Graphical :  public Observer {
     Xwindow w;
     public:
         //TODO make ctor
-        void notify() override;
+        void notify(int players_turn) override;
 };
 
 #endif // DISPLAY_H_

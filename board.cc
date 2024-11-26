@@ -70,13 +70,6 @@ Board::Board(string link1_string, string link2_string) : tiles{BOARD_WIDTH, vect
     } // TODO Player construction
 }
 
-pair<int, int> Board::getCoords(char link) {
-    if (islower(link)) {
-        return {link1[link - 'a'].getX(), link1[link - 'a'].getY()};
-    } 
-    return {link2[link - 'A'].getX(), link2[link - 'A'].getY()};
-}
-
 bool Board::isEmpty(int x, int y) const {
     return tiles[x][y].isEmpty();
 }
@@ -198,39 +191,38 @@ void Board::battle(char l1, char l2, int initiator) {
     int st1 = link1[i1].getStrength();
     int st2 = link2[i2].getStrength();
 
-    int battle_x, battle_y, other_x, other_y;
+    pair<int, int> battle_coords, other_coords;
     if (initiator == 1) {
-        battle_x = link2[i2].getX();
-        battle_y = link2[i2].getY();
-        other_x = link1[i1].getX();
-        other_y = link1[i1].getY();
+        battle_coords = getCoords(l2);
+        other_coords = getCoords(l1);
     } else {
-        other_x = link2[i2].getX();
-        other_y = link2[i2].getY();
-        battle_x = link1[i1].getX();
-        battle_y = link1[i1].getY();
+        battle_coords = getCoords(l1);
+        other_coords = getCoords(l2);
     }
 
-    tiles[other_x][other_y].setChar('.');
+    tiles[other_coords.first][other_coords.second].setChar('.');
     
     //if player 1 is winner, player 1 downloads player 2's link
     if ((st1 == st2 && initiator == 1) || st1 > st2) {
         link2[i2].setDownload(ByPlayer1);
         download(ByPlayer1, link2[i2]);
-        tiles[battle_x][battle_y].setChar(l1);
+        tiles[battle_coords.first][battle_coords.second].setChar(l1);
         return;
     } 
     link1[i1].setDownload(ByPlayer2);
     download(ByPlayer2, link1[i1]);
-    tiles[battle_x][battle_y].setChar(l2);
+    tiles[battle_coords.first][battle_coords.second].setChar(l2);
 }
 
 void Board::render() const {
 
 }
 
-Tile& Board::getTile(int x, int y) {
-    return tiles[x][y];
+pair<int, int> Board::getCoords(char link) const {
+    if (islower(link)) {
+        return {link1[link - 'a'].getX(), link1[link - 'a'].getY()};
+    } 
+    return {link2[link - 'A'].getX(), link2[link - 'A'].getY()};
 }
 
 Player& Board::getPlayer1() {
@@ -239,4 +231,15 @@ Player& Board::getPlayer1() {
 
 Player& Board::getPlayer2() {
     return player2;
+}
+
+Link &Board::getLink(char link) {
+    if (islower(link)) {
+        return link1[link - 'a'];
+    }
+    return link2[link - 'A'];
+}
+
+Tile& Board::getTile(int x, int y) {
+    return tiles[x][y];
 }
