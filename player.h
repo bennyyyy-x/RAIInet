@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "ability.h"
+#include "link.h"
 
 using namespace std;
 
@@ -10,7 +11,7 @@ class Player {
     vector<Ability> cards;
 
 public:
-    void download(const Link &l);
+    void printAbility();
 };
 
 #endif // PLAYER_H_

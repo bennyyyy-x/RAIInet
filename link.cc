@@ -9,6 +9,7 @@ int Link::getStrength() const { return strength; }
 bool Link::getType() const { return isData; }
 bool Link::isRevealed() const { return revealed; }
 bool Link::isBoosted() const { return boosted; }
+bool Link::isDownloaded() const { return downloaded; }
 int Link::getX() const { return x; }
 int Link::getY() const { return y; }
 
@@ -16,6 +17,7 @@ int Link::getY() const { return y; }
 void Link::setStrength(int s) { strength = s; }
 void Link::setX(int x) { this->x = x; }
 void Link::setY(int y) { this->y = y; }
+void Link::download() { downloaded = true; }
 
 //abilities
 void Link::boost() { boosted = true; }
@@ -48,7 +50,7 @@ bool Link::move(Direction dir) {
 
     int tmp_x = x + convertToX(dir), tmp_y = y + convertToY(dir);
     // Moves off side edge (Illegal)
-    if (tmp_x < 0 || tmp_x > 7) {
+    if (tmp_x < 0 || tmp_x > BOARD_WIDTH - 1) {
         return false;
     }
 
@@ -61,7 +63,7 @@ bool Link::move(Direction dir) {
         // Player 1 should download this link
         downloaded = true;
         // TODO think how to make player 1 download the link, how to call the download method
-    } else if (tmp_y > 7) { // Moves off top edge
+    } else if (tmp_y > BOARD_WIDTH - 1) { // Moves off top edge
         if (islower(c)) { // Illegal
             return false;
         }

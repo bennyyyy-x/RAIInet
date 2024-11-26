@@ -24,6 +24,7 @@ public:
     bool getType() const;
     bool isRevealed() const;
     bool isBoosted() const;
+    bool isDownloaded() const;
     int getX() const;
     int getY() const;
     
@@ -31,6 +32,7 @@ public:
     void setStrength(int s);
     void setX(int x);
     void setY(int y);
+    void download();
 
     //abilities
     void boost();

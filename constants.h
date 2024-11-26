@@ -1,7 +1,7 @@
 #ifndef CONSTANTS_H_
 #define CONSTANTS_H_
 
-const int board_width = 8;
+const int BOARD_WIDTH = 8;
 
 enum Direction { UP = 0, DOWN, LEFT, RIGHT };
 

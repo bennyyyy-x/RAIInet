@@ -26,7 +26,7 @@ string getRandomLinks() {
     return ans;
 }
 
-Board::Board(string link1_string, string link2_string) : tiles{board_width, vector<Tile>(board_width)} {
+Board::Board(string link1_string, string link2_string) : tiles{BOARD_WIDTH, vector<Tile>(BOARD_WIDTH)} {
     if (link1_string == "") {
         link1_string = getRandomLinks();
     }
@@ -71,9 +71,7 @@ bool Board::isEmpty(int x, int y) {
     return tiles[x][y].isEmpty();
 }
 
-// add error checking?? or add in if statements so if 
-// link moves outside board or on server ports dont do anything?
-// also remmeber to add in input error checking for link chars
+// TODO: rememeber to add in input error checking for link chars
 void Board::move(char link, Direction dir) {
     if (islower(link)) {
         link1[link - 'a'].move(dir);
@@ -82,6 +80,7 @@ void Board::move(char link, Direction dir) {
     }
 }
 
+//TODO instead of returning int to call download, call downloed in here
 int Board::battle(char l1, char l2, int initiator) {
     link1[l1 - 'a'].reveal();
     link2[l2 - 'A'].reveal();
