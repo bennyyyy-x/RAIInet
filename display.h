@@ -7,23 +7,23 @@
 using namespace std;
 
 class Observer {
-    public:
-        virtual void notify(int players_turn) = 0;
+public:
+    virtual void notify(int players_turn) = 0;
 };
 
 class TextDisplay : public Observer {
     shared_ptr<Board> b;
-    public:
-        //TODO make ctor
-        void notify(int players_turn) override;
+public:
+    TextDisplay(shared_ptr<Board> b);
+    void notify(int players_turn) override;
 };
 
 class Graphical :  public Observer {
     Board *b;
     Xwindow w;
-    public:
-        //TODO make ctor
-        void notify(int players_turn) override;
+public:
+    //TODO make ctor
+    void notify(int players_turn) override;
 };
 
 #endif // DISPLAY_H_

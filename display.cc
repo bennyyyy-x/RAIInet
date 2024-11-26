@@ -2,8 +2,11 @@
 #include "board.h"
 #include <iostream>
 #include <string>
+#include <memory>
 
 using namespace std;
+
+TextDisplay::TextDisplay(shared_ptr<Board> b) : b{b} {}
 
 //TODO add in players_turn param in Board::render and Subject::notifyObservers
 void TextDisplay::notify(int players_turn) {

@@ -11,6 +11,7 @@ class Player;
 class Board;
 
 class Ability {
+    bool used;
 public:
     virtual void activate(Player& player, Board& board, vector<string> params) = 0;
 };
