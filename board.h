@@ -8,6 +8,7 @@
 #include "constants.h"
 #include "tile.h"
 #include "link.h"
+#include "player.h"
 
 using namespace std;
 
@@ -37,7 +38,7 @@ public:
 
     void move (char link, Direction dir);
     //TODO: what should this return???
-    int battle (char l1, char l2, int initiator);
+    void battle (char l1, char l2, int initiator);
     bool isEmpty (int x, int y);
     void render() const;
 };

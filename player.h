@@ -10,8 +10,8 @@ using namespace std;
 class Player {
     vector<Ability> cards;
 
-public:
-    void printAbility();
+    public:
+        void printAbility();
 };
 
 #endif // PLAYER_H_

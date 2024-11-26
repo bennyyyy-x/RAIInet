@@ -154,18 +154,42 @@ void Board::move(char link, Direction dir) {
     }
 }
 
-//TODO instead of returning int to call download, call downloed in here
-int Board::battle(char l1, char l2, int initiator) {
-    link1[l1 - 'a'].reveal();
-    link2[l2 - 'A'].reveal();
+//battle: player 1's link, player 2's link, player initiator of battle
+void Board::battle(char l1, char l2, int initiator) {
+    int i1 = l1 - 'a';
+    int i2 = l2 - 'A';
+    
+    link1[i1].reveal();
+    link2[i2].reveal();
 
-    int st1 = link1[l1 - 'a'].getStrength();
-    int st2 = link2[l1 - 'A'].getStrength();
-    if (st1 == st2) {
-        return initiator;
+    int st1 = link1[i1].getStrength();
+    int st2 = link2[i2].getStrength();
+
+    int battle_x, battle_y, other_x, other_y;
+    if (initiator == 1) {
+        battle_x = link2[i2].getX();
+        battle_y = link2[i2].getY();
+        other_x = link1[i1].getX();
+        other_y = link1[i1].getY();
+    } else {
+        other_x = link2[i2].getX();
+        other_y = link2[i2].getY();
+        battle_x = link1[i1].getX();
+        battle_y = link1[i1].getY();
     }
-    if (st1 > st2) {
-        return 1;
-    }
-    return 2;
+
+    tiles[other_x][other_y].setChar('.');
+    
+    //if player 1 is winner, player 1 downloads player 2's link
+    if ((st1 == st2 && initiator == 1) || st1 > st2) {
+        link2[i2].setDownload(ByPlayer1);
+        tiles[battle_x][battle_y].setChar(l1);
+        return;
+    } 
+    link1[i1].setDownload(ByPlayer2);
+    tiles[battle_x][battle_y].setChar(l2);
+}
+
+void Board::render() const {
+
 }
