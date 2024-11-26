@@ -5,7 +5,6 @@
 
 using namespace std;
 
-//TODO add in players_turn param in Board::render and Subject::notifyObservers
 void TextDisplay::notify(int players_turn) {
     cout << "Player 1:" << endl;
     cout << "Downloaded: ";
