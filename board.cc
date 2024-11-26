@@ -71,12 +71,86 @@ bool Board::isEmpty(int x, int y) {
     return tiles[x][y].isEmpty();
 }
 
+int convertToY(Direction dir) {
+    if (dir == Direction::UP) {
+        return 1;
+    } else if (dir == Direction::DOWN) {
+        return -1;
+    }
+    return 0;
+}
+
+int convertToX(Direction dir) {
+    if (dir == Direction::RIGHT) {
+        return 1;
+    } else if (dir == Direction::LEFT) {
+        return -1;
+    }
+    return 0;
+}
+
+// Return false if move was unable to be made
+bool move_helper(Link& link, Direction dir) {
+    // Cannot move downloaded link
+    if (link.downloadStatus() != NotDownloaded) {
+        return false;
+    }
+
+    int tmp_x = link.getX() + convertToX(dir), tmp_y = link.getY() + convertToY(dir);
+    if (tmp_x < 0 || tmp_x > BOARD_WIDTH - 1) { // Moves off side edge (Illegal)
+        return false;
+    }
+    
+    char c = link.getChar();
+    if (tmp_y < 0) { // Moves off bottom edge
+        if (isupper(c)) { // Illegal
+            return false;
+        }
+        link.setDownload(ByPlayer1);
+    } else if (tmp_y > BOARD_WIDTH - 1) { // Moves off top edge
+        if (islower(c)) { // Illegal
+            return false;
+        }
+        link.setDownload(ByPlayer2);
+    }
+
+    if (tmp_y == 0 && (tmp_x == 3 || tmp_x == 4)) { // Bottom server ports
+        if (isupper(c)) {
+            return false;
+        }
+        link.setDownload(ByPlayer2);
+    } else if (tmp_y == BOARD_WIDTH - 1 && (tmp_x == 3 || tmp_x == 4)) { // Top server ports
+        if (islower(c)) {
+            return false;
+        }
+        link.setDownload(ByPlayer1);
+    }
+
+    link.setX(tmp_x);
+    link.setY(tmp_y);
+    return true;
+}
+
 // TODO: rememeber to add in input error checking for link chars
 void Board::move(char link, Direction dir) {
     if (islower(link)) {
-        link1[link - 'a'].move(dir);
+        int x = link1[link - 'a'].getX(), y = link1[link - 'a'].getY();
+        if (move_helper(link1[link - 'a'], dir)) {
+            tiles[x][y].setChar('.');
+            if (link1[link - 'a'].downloadStatus() != NotDownloaded) {
+                int new_x = link1[link - 'a'].getX(), new_y = link1[link - 'a'].getY();
+                tiles[new_x][new_y].setChar(link1[link - 'a'].getChar());
+            }
+        }
     } else {
-        link2[link - 'A'].move(dir);
+        int x = link2[link - 'A'].getX(), y = link2[link - 'A'].getY();
+        if (move_helper(link2[link - 'A'], dir)) {
+            tiles[x][y].setChar('.');
+            if (link2[link - 'A'].downloadStatus() != NotDownloaded) {
+                int new_x = link2[link - 'A'].getX(), new_y = link2[link - 'A'].getY();
+                tiles[new_x][new_y].setChar(link2[link - 'A'].getChar());
+            }
+        }
     }
 }
 

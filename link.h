@@ -12,7 +12,7 @@ class Link {
     bool isData;
     bool boosted = false;
     bool revealed = false;
-    bool downloaded = false;
+    DownloadStatus downloaded = NotDownloaded;
     int x, y;
 
 public:
@@ -24,7 +24,7 @@ public:
     bool getType() const;
     bool isRevealed() const;
     bool isBoosted() const;
-    bool isDownloaded() const;
+    DownloadStatus downloadStatus() const;
     int getX() const;
     int getY() const;
     
@@ -32,15 +32,12 @@ public:
     void setStrength(int s);
     void setX(int x);
     void setY(int y);
-    void download();
+    void setDownload(DownloadStatus ds);
 
     //abilities
     void boost();
     void polarize();
     void reveal();
-
-    // Return false if move was unable to be made
-    bool move(Direction dir);
 };
 
 #endif // LINK_H_
