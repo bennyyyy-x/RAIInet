@@ -28,21 +28,3 @@ void Link::setDownload(DownloadStatus ds) {
 void Link::boost() { boosted = true; }
 void Link::polarize() { isData = !isData; }
 void Link::reveal() { revealed = true; }
-
-int convertToY(Direction dir) {
-    if (dir == Direction::UP) {
-        return 1;
-    } else if (dir == Direction::DOWN) {
-        return -1;
-    }
-    return 0;
-}
-
-int convertToX(Direction dir) {
-    if (dir == Direction::RIGHT) {
-        return 1;
-    } else if (dir == Direction::LEFT) {
-        return -1;
-    }
-    return 0;
-}

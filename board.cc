@@ -3,10 +3,41 @@
 #include <algorithm>
 #include <random>
 #include <sstream>
+#include <memory>
+#include "display.h"
 #include "board.h"
 #include "constants.h"
 
 using namespace std;
+
+void Subject::attach(shared_ptr<Observer> ptr) {
+    observers.push_back(ptr);
+}
+
+void Subject::detach(shared_ptr<Observer>& ptr) {
+    for (auto it = observers.begin(); it != observers.end();) {
+        if (auto observer = it->lock()) {
+            if (observer == ptr) {
+                it = observers.erase(it);
+            } else {
+                ++it;
+            }
+        } else {
+            it = observers.erase(it); // Remove expired weak_ptr
+        }
+    }
+}
+
+void Subject::notifyObservers(int players_turn) {
+    for (auto it = observers.begin(); it != observers.end();) {
+        if (auto ptr = it->lock()) {
+            ptr->notify(players_turn);
+            ++it;
+        } else {
+            observers.erase(it);
+        }
+    }
+}
 
 // Convert int to link string
 string getLinkString(int x) {
@@ -26,7 +57,8 @@ string getRandomLinks() {
     return ans;
 }
 
-Board::Board(string link1_string, string link2_string) : tiles{BOARD_WIDTH, vector<Tile>(BOARD_WIDTH)} {
+Board::Board(string link1_string, string link2_string, string ability1, string ability2)
+    : tiles{BOARD_WIDTH, vector<Tile>(BOARD_WIDTH)}, player1{ability1}, player2{ability2} {
     if (link1_string == "") {
         link1_string = getRandomLinks();
     }
@@ -47,7 +79,7 @@ Board::Board(string link1_string, string link2_string) : tiles{BOARD_WIDTH, vect
     }
 
     istringstream iss2{link2_string};
-    char c = 'A';
+    c = 'A';
     while (iss2 >> link) {
         int x = c - 'A', y = BOARD_WIDTH - 1;
         if (c == 'D' || c == 'E') {
@@ -214,8 +246,8 @@ void Board::battle(char l1, char l2, int initiator) {
     tiles[battle_coords.first][battle_coords.second].setChar(l2);
 }
 
-void Board::render() const {
-
+void Board::render(int players_turn) {
+    notifyObservers(players_turn);
 }
 
 pair<int, int> Board::getCoords(char link) const {

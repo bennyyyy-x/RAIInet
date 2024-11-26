@@ -15,4 +15,4 @@ public:
     void setFirewall(int f);
 };
 
-#endif TILE_H_
+#endif // TILE_H_
