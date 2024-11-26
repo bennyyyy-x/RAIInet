@@ -28,6 +28,7 @@ class Board : public Subject {
     vector<vector<Tile>> tiles;
     vector<Link> link1;
     vector<Link> link2;
+    Player player1, player2; // TODO Initialize players in board constructor
 
 public:
     // Sample string for link1/link2: "V1 D4 V3 V2 D3 V4 D2 D1"
@@ -36,11 +37,16 @@ public:
 
     pair<int, int> getCoords(char link);
 
-    void move (char link, Direction dir);
+    void move(char link, Direction dir);
     //TODO: what should this return???
-    void battle (char l1, char l2, int initiator);
-    bool isEmpty (int x, int y);
+    void battle(char l1, char l2, int initiator);
+    bool isEmpty(int x, int y) const;
     void render() const;
+    void download(DownloadStatus status, const Link& link);
+
+    Tile& getTile(int x, int y);
+    Player& getPlayer1();
+    Player& getPlayer2();
 };
 
 #endif // BOARD_H_

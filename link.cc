@@ -17,7 +17,12 @@ int Link::getY() const { return y; }
 void Link::setStrength(int s) { strength = s; }
 void Link::setX(int x) { this->x = x; }
 void Link::setY(int y) { this->y = y; }
-void Link::setDownload(DownloadStatus ds) { downloaded = ds; }
+void Link::setDownload(DownloadStatus ds) {
+    downloaded = ds;
+    if (ds != NotDownloaded) {
+        reveal();
+    }
+}
 
 //abilities
 void Link::boost() { boosted = true; }
