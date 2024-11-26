@@ -29,6 +29,7 @@ void Subject::detach(shared_ptr<Observer>& ptr) {
 }
 
 void Subject::notifyObservers(int players_turn) {
+    cout << "IN NOTIFYOBSERVERS" << endl;
     for (auto it = observers.begin(); it != observers.end();) {
         if (auto ptr = it->lock()) {
             ptr->notify(players_turn);
@@ -247,6 +248,7 @@ void Board::battle(char l1, char l2, int initiator) {
 }
 
 void Board::render(int players_turn) {
+    cout << "IN RENDER" << endl;
     notifyObservers(players_turn);
 }
 

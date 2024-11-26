@@ -9,6 +9,7 @@ using namespace std;
 TextDisplay::TextDisplay(shared_ptr<Board> b) : b{b} {}
 
 void TextDisplay::notify(int players_turn) {
+    cout << "IN TEXTDISPLAY NOTIFY" << endl;
     cout << "Player 1:" << endl;
     cout << "Downloaded: ";
     cout << b->getPlayer1().getData() << "D, " << b->getPlayer1().getVirus() << "V" << endl;
