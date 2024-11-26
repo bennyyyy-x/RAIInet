@@ -18,7 +18,7 @@ public:
     void notify(int players_turn) override;
 };
 
-class Graphical :  public Observer {
+class Graphical : public Observer {
     Board *b;
     Xwindow w;
 public:

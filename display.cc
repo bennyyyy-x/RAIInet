@@ -38,16 +38,19 @@ void TextDisplay::notify(int players_turn) {
     }
     //Prints out board
     for (int i = 0; i < BOARD_WIDTH; ++i) {
-        cout << "=" << endl;
+        cout << "=";
     }
+    cout << endl;
     for (int y = BOARD_WIDTH - 1; y >= 0; --y) {
         for (int x = 0; x < BOARD_WIDTH; ++x) {
-            b->getTile(x, y).getChar();
+            cout << b->getTile(x, y).getChar();
         }
+        cout << endl;
     }
     for (int i = 0;  i < BOARD_WIDTH; ++i) {
-        cout << "=" << endl;
+        cout << "=";
     }
+    cout <<  endl;
 
     cout << "Player 2:" << endl;
     cout << "Downloaded: ";
