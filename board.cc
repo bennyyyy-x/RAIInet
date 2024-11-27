@@ -171,30 +171,30 @@ void Board::download(DownloadStatus status, const Link& link) {
 
 
 // Return false if move was unable to be made
-bool move_helper(Link& link, Direction dir, Board& board) {
+MoveStatus move_helper(Link& link, Direction dir, Board& board) {
     // Cannot move downloaded link
     if (link.downloadStatus() != NotDownloaded) {
-        return false;
+        return MoveStatus::IllegalMove;
     }
 
     int tmp_x = link.getX() + convertToX(dir) * (link.isBoosted() ? 2 : 1); // Move with boost
     int tmp_y = link.getY() + convertToY(dir) * (link.isBoosted() ? 2 : 1);
     if (tmp_x < 0 || tmp_x > BOARD_WIDTH - 1) { // Moves off side edge (Illegal)
-        return false;
+        return MoveStatus::IllegalMove;
     }
     
     char c = link.getChar();
     Tile& destination = board.getTile(tmp_x, tmp_y);
     char other_c = destination.getChar();
     if (tmp_y < 0) { // Moves off bottom edge
-        if (isupper(c)) { // Illegal
-            return false;
+        if (isupper(c)) {
+            return MoveStatus::IllegalMove; // Illegal
         }
         link.setDownload(DownloadStatus::ByPlayer1);
         board.download(DownloadStatus::ByPlayer1, link);
     } else if (tmp_y >= BOARD_WIDTH) { // Moves off top edge
-        if (islower(c)) { // Illegal
-            return false;
+        if (islower(c)) {
+            return MoveStatus::IllegalMove; // Illegal
         }
         link.setDownload(DownloadStatus::ByPlayer2);
         board.download(DownloadStatus::ByPlayer2, link);
@@ -202,61 +202,56 @@ bool move_helper(Link& link, Direction dir, Board& board) {
 
     if (tmp_y == 0 && (tmp_x == 3 || tmp_x == 4)) { // Bottom server ports
         if (isupper(c)) {
-            return false;
+            return MoveStatus::IllegalMove; // Illegal
         }
         link.setDownload(DownloadStatus::ByPlayer2);
         board.download(DownloadStatus::ByPlayer2, link);
     } else if (tmp_y == BOARD_WIDTH - 1 && (tmp_x == 3 || tmp_x == 4)) { // Top server ports
         if (islower(c)) {
-            return false;
+            return MoveStatus::IllegalMove; // Illegal
         }
         link.setDownload(DownloadStatus::ByPlayer1);
         board.download(DownloadStatus::ByPlayer1, link);
-    } else if (!board.isEmpty(tmp_x, tmp_y)) { // Moves on top another link
-        if (islower(c) == islower(other_c)) { // Same player's link
-            return false;
-        }
-        if (islower(c)) {
-            board.battle(c, other_c, 1);
-        } else {
-            board.battle(other_c, c, 2);
-        }
-        return false;
     }
 
-    // Move onto firewall
-    if ((destination.getFirewall() == FirewallStatus::Player1s && isPlayer2Link(c))
+    if (isPlayer1Link(c) == isPlayer1Link(other_c)) { // Same player's link
+        return MoveStatus::IllegalMove; // Illegal
+    }
+
+    if ((destination.getFirewall() == FirewallStatus::Player1s && isPlayer2Link(c)) // Move onto opp's firewall
      || (destination.getFirewall() == FirewallStatus::Player2s && isPlayer1Link(c))) {
         link.reveal();
-        if (!link.getIsData()) {
+        if (!link.getIsData()) { // virus gets immediately downloaded by owner
             DownloadStatus ds = isPlayer1Link(link.getChar()) ? DownloadStatus::ByPlayer1 : DownloadStatus::ByPlayer2;
             link.setDownload(ds);
             board.download(ds, link);
             board.getTile(link.getX(), link.getChar()).setChar('.');
-            return false;
+            return MoveStatus::DoNotNeedTileChange;
         }
-        if (isPlayer1Link(c) && isPlayer2Link(other_c)) {
+    }
+
+    if (!board.isEmpty(tmp_x, tmp_y)) { // Moves on top another link
+        if (isPlayer1Link(c)) {
             board.battle(c, other_c, 1);
-            return false;
-        }
-        if (isPlayer2Link(c) && isPlayer1Link(other_c)) {
+        } else {
             board.battle(other_c, c, 2);
-            return false;
         }
+        return MoveStatus::DoNotNeedTileChange;
     }
 
     link.setX(tmp_x);
     link.setY(tmp_y);
-    return true;
+    return MoveStatus::NeedTileChange;
 }
 
 
-// TODO: rememeber to add in input error checking for link chars
-void Board::move(char link, Direction dir) {
+bool Board::move(char link, Direction dir) {
     // cout << "Coord for " << link << ": " << getCoords(link).first << ", " << getCoords(link).second << endl;
+    MoveStatus ms;
     if (islower(link)) {
         auto coord = getCoords(link);
-        if (move_helper(link1[link - 'a'], dir, *this)) {
+        ms = move_helper(link1[link - 'a'], dir, *this);
+        if (ms == MoveStatus::NeedTileChange) {
             tiles[coord.first][coord.second].setChar('.');
             if (link1[link - 'a'].downloadStatus() == NotDownloaded) {
                 auto new_coord = getCoords(link);
@@ -265,7 +260,8 @@ void Board::move(char link, Direction dir) {
         }
     } else {
         auto coord = getCoords(link);
-        if (move_helper(link2[link - 'A'], dir, *this)) {
+        ms = move_helper(link2[link - 'A'], dir, *this);
+        if (ms == MoveStatus::NeedTileChange) {
             tiles[coord.first][coord.second].setChar('.');
             if (link2[link - 'A'].downloadStatus() == NotDownloaded) {
                 auto new_coord = getCoords(link);
@@ -273,6 +269,7 @@ void Board::move(char link, Direction dir) {
             }
         }
     }
+    return ms != MoveStatus::IllegalMove;
 }
 
 

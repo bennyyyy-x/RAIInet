@@ -19,7 +19,7 @@ void Link::setX(int x) { this->x = x; }
 void Link::setY(int y) { this->y = y; }
 void Link::setDownload(DownloadStatus ds) {
     downloaded = ds;
-    if (ds != NotDownloaded) {
+    if (ds != DownloadStatus::NotDownloaded) {
         reveal();
     }
 }

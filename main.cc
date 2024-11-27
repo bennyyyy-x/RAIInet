@@ -127,10 +127,14 @@ int main(int argc, char* argv[]) {
                     break;
                 }
 
-                board->move(link, dir);
-                players_turn = 3 - players_turn; // switch turn
-                ability_used = false;
-                board->render(players_turn); // Refresh the board after each move
+                bool moveSuccessful = board->move(link, dir);
+                if (moveSuccessful) {
+                    players_turn = 3 - players_turn; // switch turn
+                    ability_used = false;
+                    board->render(players_turn); // Refresh the board after each move
+                } else {
+                    board->sendMessage("Move failed");
+                }
 
             } else if (command == "abilities") {
                 player.printAbility();
