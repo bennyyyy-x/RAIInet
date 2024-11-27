@@ -23,7 +23,41 @@ public:
 
 class LinkBoost : public Ability {
 public:
-    //TODO: ctor
+    bool activate(Player& player, Board& board, vector<string> params) override;
+};
+
+class Firewall : public Ability {
+public:
+    bool activate(Player& player, Board& board, vector<string> params) override;
+};
+
+class Download : public Ability {
+public:
+    bool activate(Player& player, Board& board, vector<string> params) override;
+};
+
+class Polarize : public Ability {
+public:
+    bool activate(Player& player, Board& board, vector<string> params) override;
+};
+
+class Scan : public Ability {
+public:
+    bool activate(Player& player, Board& board, vector<string> params) override;
+};
+
+class Exchange : public Ability {
+public:
+    bool activate(Player& player, Board& board, vector<string> params) override;
+};
+
+class Teleport : public Ability {
+public:
+    bool activate(Player& player, Board& board, vector<string> params) override;
+};
+
+class Hijack : public Ability {
+public:
     bool activate(Player& player, Board& board, vector<string> params) override;
 };
 
