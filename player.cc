@@ -32,8 +32,11 @@ bool Player::useAbility(int id, Board& board, vector<string> params) {
     if (cards[id].isUsed()) {
         return false;
     }
-    cards[id].activate(*this, board, params);
-    return true;
+    bool success = cards[id].activate(*this, board, params);
+    if (success) {
+        cards[id].setUsed();
+    }
+    return success;
 }
 
 

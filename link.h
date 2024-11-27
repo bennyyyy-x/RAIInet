@@ -33,6 +33,7 @@ public:
     void setX(int x);
     void setY(int y);
     void setDownload(DownloadStatus ds);
+    void setBoosted();
 
     //abilities
     void boost();

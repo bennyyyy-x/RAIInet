@@ -23,6 +23,7 @@ void Link::setDownload(DownloadStatus ds) {
         reveal();
     }
 }
+void Link::setBoosted() { boosted = true; }
 
 //abilities
 void Link::boost() { boosted = true; }
