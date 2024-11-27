@@ -182,10 +182,12 @@ int main(int argc, char* argv[]) {
 // return bool whether ability was applied
 bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<istream> in, int& players_turn) {
     AbilityName ability = player.getAbilityName(id);
+    char link, link1, link2;
+    int x, y;
+
     switch (ability) {
 
         case AbilityName::LinkBoost:
-            char link;
             if (*in >> link) {
                 if ((players_turn == 1 && isPlayer1Link(link))
                     || (players_turn == 2 && isPlayer2Link(link))) {
@@ -196,7 +198,6 @@ bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<
             return false;
 
         case AbilityName::Firewall:
-            int x, y;
             if (*in >> x >> y) {
                 if (x < 0 || x >= BOARD_WIDTH || y < 0 || y >= BOARD_WIDTH) {
                     board->sendMessage("Invalid coordinates for firewall");
@@ -213,7 +214,6 @@ bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<
             return false;
 
         case AbilityName::Download:
-            char link;
             if (*in >> link) {
                 if ((players_turn == 2 && isPlayer1Link(link))
                     || (players_turn == 1 && isPlayer2Link(link))) {
@@ -224,7 +224,6 @@ bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<
             return false;
 
         case AbilityName::Polarize:
-            char link;
             if (*in >> link) {
                 if ((players_turn == 1 && isPlayer1Link(link))
                     || (players_turn == 2 && isPlayer2Link(link))) {
@@ -235,7 +234,6 @@ bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<
             return false;
 
         case AbilityName::Scan:
-            char link;
             if (*in >> link) {
                 if ((players_turn == 2 && isPlayer1Link(link))
                     || (players_turn == 1 && isPlayer2Link(link))) {
@@ -246,7 +244,6 @@ bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<
             return false;
 
         case AbilityName::Exchange:
-            char link1, link2;
             if (*in >> link1 >> link2) {
                 if ((isPlayer1Link(link1) && isPlayer2Link(link2))
                  || (isPlayer2Link(link1) && isPlayer1Link(link2))) {
@@ -257,8 +254,6 @@ bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<
             return false;
 
         case AbilityName::Teleport:
-            char link;
-            int x, y;
             if (*in >> link >> x >> y) {
                 if (!isLink(link)) {
                     board->sendMessage("Invalid link for Teleport");
@@ -269,8 +264,8 @@ bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<
                     return false;
                 }
                 char other = board->getTile(x, y).getChar();
-                if ((isPlayer1Link(link1) && isPlayer1Link(link2))
-                 || (isPlayer2Link(link1) && isPlayer2Link(link2))) {
+                if ((isPlayer1Link(link) && isPlayer1Link(other))
+                 || (isPlayer2Link(link) && isPlayer2Link(other))) {
                     board->sendMessage("Cannot move onto player's own link");
                     return false;
                 }
@@ -280,7 +275,6 @@ bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<
             return false;
 
         case AbilityName::Hijack:
-            char link;
             if (*in >> link) {
                 if ((players_turn == 1 && isPlayer1Link(link))
                     || (players_turn == 2 && isPlayer2Link(link))) {
@@ -290,4 +284,5 @@ bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<
             board->sendMessage("Invalid link for Hijack");
             return false;
     }
+    return false;
 }

@@ -78,7 +78,3 @@ void TextDisplay::notify(int players_turn) {
 void TextDisplay::message(string message) {
     cout << message << endl;
 }
-
-void GraphicalDisplay::notify(int players_turn) {
-    
-}
