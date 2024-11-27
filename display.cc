@@ -75,5 +75,7 @@ void TextDisplay::notify(int players_turn) {
     }
 }
 
-
+void GraphicalDisplay::notify(int players_turn) {
+    
+}
 

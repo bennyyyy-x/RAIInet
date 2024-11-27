@@ -19,6 +19,7 @@ public:
     int getNumAbilities() const;
     int getData() const;
     int getVirus() const;
+    bool useAbility(int id, Board& board, vector<string> params);
 };
 
 #endif // PLAYER_H_
