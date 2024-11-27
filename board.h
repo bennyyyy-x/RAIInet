@@ -11,6 +11,10 @@
 
 using namespace std;
 
+bool isPlayer1Link(char link);
+bool isPlayer2Link(char link);
+bool isLink(char link);
+
 class Observer;
 
 class Subject {
@@ -38,7 +42,8 @@ public:
     // Randomize the order if not given
     Board(string link1_string, string link2_string, string ability1, string ability2);
 
-    void move(char link, Direction dir);
+    // return whether a move has been successfully made
+    bool move(char link, Direction dir);
     //TODO: what should this return???
     void battle(char l1, char l2, int initiator);
     bool isEmpty(int x, int y) const;

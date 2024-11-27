@@ -22,4 +22,6 @@ const int ABILITY_CARD_NUMS = 5;
 
 enum FirewallStatus { NoFirewall = 0, Player1s, Player2s };
 
+enum MoveStatus { IllegalMove = 0, NeedTileChange, DoNotNeedTileChange };
+
 #endif // CONSTANTS_H_

@@ -35,18 +35,6 @@ Direction convertDir(string dir) {
     throw invalid_argument("direction is not one of up/down/left/right");
 }
 
-bool isPlayer1Link(char link) {
-    return link >= 'a' && link <= 'h';
-}
-
-bool isPlayer2Link(char link) {
-    return link >= 'A' && link <= 'H';
-}
-
-bool isLink(char link) {
-    return isPlayer1Link(link) || isPlayer2Link(link);
-}
-
 bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<istream> in, int& players_turn);
 
 int main(int argc, char* argv[]) {
@@ -139,9 +127,14 @@ int main(int argc, char* argv[]) {
                     break;
                 }
 
-                board->move(link, dir);
-                players_turn = 3 - players_turn; // switch turn
-                ability_used = false;
+                bool moveSuccessful = board->move(link, dir);
+                if (moveSuccessful) {
+                    players_turn = 3 - players_turn; // switch turn
+                    ability_used = false;
+                    board->render(players_turn); // Refresh the board after each move
+                } else {
+                    board->sendMessage("Move failed");
+                }
 
             } else if (command == "abilities") {
                 player.printAbility();

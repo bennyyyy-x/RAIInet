@@ -6,7 +6,7 @@ Link::Link(char c, int strength, bool isData, int x, int y)
 //getters
 char Link::getChar() const { return c; }
 int Link::getStrength() const { return strength; }
-bool Link::getType() const { return isData; }
+bool Link::getIsData() const { return isData; }
 bool Link::isRevealed() const { return revealed; }
 bool Link::isBoosted() const { return boosted; }
 DownloadStatus Link::downloadStatus() const { return downloaded; }
@@ -19,7 +19,7 @@ void Link::setX(int x) { this->x = x; }
 void Link::setY(int y) { this->y = y; }
 void Link::setDownload(DownloadStatus ds) {
     downloaded = ds;
-    if (ds != NotDownloaded) {
+    if (ds != DownloadStatus::NotDownloaded) {
         reveal();
     }
 }

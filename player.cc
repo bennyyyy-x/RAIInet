@@ -4,12 +4,12 @@
 
 using namespace std;
 
-Player::Player(string abilities) : data{0}, virus{0} {
+Player::Player(int id, string abilities) : player_id{id}, data{0}, virus{0} {
     // TODO construct the abilities
 }
 
 void Player::download(const Link& link) {
-    if (link.getType()) {
+    if (link.getIsData()) {
         data++;
     } else {
         virus++;
@@ -40,9 +40,13 @@ bool Player::useAbility(int id, Board& board, vector<string> params) {
 }
 
 void Player::printAbility() const {
-    cout  << setw(5) << left << "ID"  << setw(14) << left << "Ability" << "Status" << endl;
+    cout << setw(5) << left << "ID"
+         << setw(14) << left << "Ability"
+         << "Status" << endl;
     for (int i = 0; i < 5; ++i) {
-        cout << setw(5) << left << i + 1 << setw(14) << left << cards[i].getName() << (cards[i].isUsed() ? "Used" : "") << endl;
+        cout << setw(5) << left << i + 1
+             << setw(14) << left << cards[i].getName()
+             << (cards[i].isUsed() ? "Used" : "") << endl;
     }
 }
 
