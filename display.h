@@ -21,7 +21,7 @@ public:
 };
 
 class GraphicalDisplay : public Observer {
-    Board *b;
+    Board *b; // TODO use shared_ptr
     Xwindow w;
 public:
     //TODO make ctor

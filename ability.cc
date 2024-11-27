@@ -1,6 +1,8 @@
 #include "ability.h"
+#include "board.h"
+#include "constants.h"
 
-string Ability::getName() const { return ability; }
+AbilityName Ability::getName() const { return name; }
 bool Ability::isUsed() const{ return used; }
 void Ability::setUsed() { used = true; }
 

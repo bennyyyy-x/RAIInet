@@ -5,6 +5,7 @@
 #include <string>
 #include "ability.h"
 #include "link.h"
+#include "constants.h"
 
 using namespace std;
 
@@ -20,6 +21,7 @@ public:
     int getData() const;
     int getVirus() const;
     bool useAbility(int id, Board& board, vector<string> params);
+    AbilityName getAbilityName(int id);
 };
 
 #endif // PLAYER_H_

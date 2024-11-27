@@ -1,6 +1,7 @@
 #include "tile.h"
+#include "constants.h"
 
-Tile::Tile(char c, int firewall) : c{c}, firewall{firewall} {}
+Tile::Tile(char c, FirewallStatus firewall) : c{c}, firewall{firewall} {}
 
 char Tile::getChar() const {
     if (firewall == 0 || c != '.') {
@@ -13,4 +14,5 @@ char Tile::getChar() const {
 }
 bool Tile::isEmpty() const { return c == '.'; }
 void Tile::setChar(char new_c) { c = new_c; }
-void Tile::setFirewall(int f) { firewall = f; }
+void Tile::setFirewall(FirewallStatus f) { firewall = f; }
+FirewallStatus Tile::getFirewall() const { return firewall; }

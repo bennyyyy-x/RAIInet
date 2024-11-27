@@ -127,9 +127,9 @@ bool Board::isEmpty(int x, int y) const {
 
 
 int convertToY(Direction dir) {
-    if (dir == Direction::UP) {
+    if (dir == Direction::Up) {
         return 1;
-    } else if (dir == Direction::DOWN) {
+    } else if (dir == Direction::Down) {
         return -1;
     }
     return 0;
@@ -137,9 +137,9 @@ int convertToY(Direction dir) {
 
 
 int convertToX(Direction dir) {
-    if (dir == Direction::RIGHT) {
+    if (dir == Direction::Right) {
         return 1;
-    } else if (dir == Direction::LEFT) {
+    } else if (dir == Direction::Left) {
         return -1;
     }
     return 0;
@@ -147,16 +147,16 @@ int convertToX(Direction dir) {
 
 
 void Board::download(DownloadStatus status, const Link& link) {
-    if (status == ByPlayer1) {
+    if (status == DownloadStatus::ByPlayer1) {
         player1.download(link);
-    } else if (status == ByPlayer2) {
+    } else if (status == DownloadStatus::ByPlayer2) {
         player2.download(link);
     }
 }
 
 
 // Return false if move was unable to be made
-bool move_helper(Link& link, Direction dir, Board& board) {
+bool move_helper(Link& link, Direction dir, Board& board) { // TODO move with boost
     // Cannot move downloaded link
     if (link.downloadStatus() != NotDownloaded) {
         return false;
@@ -172,28 +172,28 @@ bool move_helper(Link& link, Direction dir, Board& board) {
         if (isupper(c)) { // Illegal
             return false;
         }
-        link.setDownload(ByPlayer1);
-        board.download(ByPlayer1, link);
-    } else if (tmp_y > BOARD_WIDTH - 1) { // Moves off top edge
+        link.setDownload(DownloadStatus::ByPlayer1);
+        board.download(DownloadStatus::ByPlayer1, link);
+    } else if (tmp_y >= BOARD_WIDTH) { // Moves off top edge
         if (islower(c)) { // Illegal
             return false;
         }
-        link.setDownload(ByPlayer2);
-        board.download(ByPlayer2, link);
+        link.setDownload(DownloadStatus::ByPlayer2);
+        board.download(DownloadStatus::ByPlayer2, link);
     }
 
     if (tmp_y == 0 && (tmp_x == 3 || tmp_x == 4)) { // Bottom server ports
         if (isupper(c)) {
             return false;
         }
-        link.setDownload(ByPlayer2);
-        board.download(ByPlayer2, link);
+        link.setDownload(DownloadStatus::ByPlayer2);
+        board.download(DownloadStatus::ByPlayer2, link);
     } else if (tmp_y == BOARD_WIDTH - 1 && (tmp_x == 3 || tmp_x == 4)) { // Top server ports
         if (islower(c)) {
             return false;
         }
-        link.setDownload(ByPlayer1);
-        board.download(ByPlayer1, link);
+        link.setDownload(DownloadStatus::ByPlayer1);
+        board.download(DownloadStatus::ByPlayer1, link);
     } else if (!board.isEmpty(tmp_x, tmp_y)) { // Moves on top another link
         char other_c = board.getTile(tmp_x, tmp_y).getChar();
         if (islower(c) == islower(other_c)) { // Same player's link
@@ -267,13 +267,13 @@ void Board::battle(char l1, char l2, int initiator) {
     
     //if player 1 is winner, player 1 downloads player 2's link
     if ((st1 == st2 && initiator == 1) || st1 > st2) {
-        link2[i2].setDownload(ByPlayer1);
-        download(ByPlayer1, link2[i2]);
+        link2[i2].setDownload(DownloadStatus::ByPlayer1);
+        download(DownloadStatus::ByPlayer1, link2[i2]);
         tiles[battle_coords.first][battle_coords.second].setChar(l1);
         return;
     } 
-    link1[i1].setDownload(ByPlayer2);
-    download(ByPlayer2, link1[i1]);
+    link1[i1].setDownload(DownloadStatus::ByPlayer2);
+    download(DownloadStatus::ByPlayer2, link1[i1]);
     tiles[battle_coords.first][battle_coords.second].setChar(l2);
 }
 

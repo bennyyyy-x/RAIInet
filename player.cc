@@ -39,10 +39,13 @@ bool Player::useAbility(int id, Board& board, vector<string> params) {
     return success;
 }
 
-
 void Player::printAbility() const {
     cout  << setw(5) << left << "ID"  << setw(14) << left << "Ability" << "Status" << endl;
     for (int i = 0; i < 5; ++i) {
         cout << setw(5) << left << i + 1 << setw(14) << left << cards[i].getName() << (cards[i].isUsed() ? "Used" : "") << endl;
     }
+}
+
+AbilityName Player::getAbilityName(int id) {
+    return cards[id].getName();
 }

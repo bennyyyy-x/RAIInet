@@ -1,6 +1,7 @@
 #ifndef ABILITY_H_
 #define ABILITY_H_
 
+#include "constants.h"
 #include <vector>
 #include <string>
 
@@ -12,10 +13,10 @@ class Board;
 
 class Ability {
     bool used;
-    string ability;
+    AbilityName name;
 public:
     virtual bool activate(Player& player, Board& board, vector<string> params) = 0;
-    string getName() const;
+    AbilityName getName() const;
     bool isUsed() const;
     void setUsed();
 };

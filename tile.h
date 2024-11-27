@@ -1,18 +1,20 @@
 #ifndef TILE_H_
 #define TILE_H_
 
+#include "constants.h"
+
 class Tile {
     // a-g, A-G, S, .
     char c;
-    // 0: no firewall, 1: player 1's firewall, 2: player 2's firewall
-    int firewall;
+    FirewallStatus firewall;
 
 public:
-    Tile(char c = '.', int firewall = 0);
+    Tile(char c = '.', FirewallStatus firewall = FirewallStatus::NoFirewall);
     char getChar() const;
     bool isEmpty() const;
     void setChar(char new_c);
-    void setFirewall(int f);
+    void setFirewall(FirewallStatus f);
+    FirewallStatus getFirewall() const;
 };
 
 #endif // TILE_H_
