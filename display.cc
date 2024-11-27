@@ -9,7 +9,6 @@ using namespace std;
 TextDisplay::TextDisplay(shared_ptr<Board> b) : b{b} {}
 
 void TextDisplay::notify(int players_turn) {
-    cout << "IN TEXTDISPLAY NOTIFY" << endl;
     cout << "Player 1:" << endl;
     cout << "Downloaded: ";
     cout << b->getPlayer1().getData() << "D, " << b->getPlayer1().getVirus() << "V" << endl;
@@ -21,15 +20,15 @@ void TextDisplay::notify(int players_turn) {
         //Display link if:
         //  - It is the link owner's turn
         //  - It is the opponent's turn, but the link is revealed
-        if (players_turn == 1 || (players_turn == 2 && b->getLink(c - 'a').isRevealed())) {
-            if (b->getLink(c - 'a').getType()) { //If is data
+        if (players_turn == 1 || (players_turn == 2 && b->getLink(c).isRevealed())) {
+            if (b->getLink(c).getType()) { //If is data
                 cout << "D";
             } else {
                 cout << "V";
             }
-            cout << b->getLink(c - 'a').getStrength() << " ";
+            cout << b->getLink(c).getStrength() << " ";
         } else {
-            cout << " ?";
+            cout << "?  ";
         }
 
         if (c == 'd' || c == 'h') {
@@ -60,13 +59,13 @@ void TextDisplay::notify(int players_turn) {
     //Prints out links 
     for (char c = 'A'; c <= 'H'; c++) {
         cout << c << ": ";
-        if (players_turn == 2 || (players_turn == 1 && b->getLink(c - 'A').isRevealed())) {
-            if (b->getLink(c - 'A').getType()) {
+        if (players_turn == 2 || (players_turn == 1 && b->getLink(c).isRevealed())) {
+            if (b->getLink(c).getType()) {
                 cout << "D";
             } else {
                 cout << "V";
             }
-            cout << b->getLink(c - 'A').getStrength() << " ";
+            cout << b->getLink(c).getStrength() << " ";
         } else {
             cout << "?  ";
         }

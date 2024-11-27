@@ -29,7 +29,6 @@ void Subject::detach(shared_ptr<Observer>& ptr) {
 }
 
 void Subject::notifyObservers(int players_turn) {
-    cout << "IN NOTIFYOBSERVERS" << endl;
     for (auto it = observers.begin(); it != observers.end();) {
         if (auto ptr = it->lock()) {
             ptr->notify(players_turn);
@@ -42,7 +41,7 @@ void Subject::notifyObservers(int players_turn) {
 
 // Convert int to link string
 string getLinkString(int x) {
-    return (x < 4 ? "V" : "D") + to_string(x + 1);
+    return (x < 4 ? "V" : "D") + to_string(x % 4 + 1);
 }
 
 // Generate random order of links
@@ -75,7 +74,7 @@ Board::Board(string link1_string, string link2_string, string ability1, string a
         if (c == 'd' || c == 'e') {
             y = 6;
         }
-        link1.push_back(Link{c, int(link[1]), link[0] == 'D', x, y});
+        link1.push_back(Link{c, link[1] - '1' + 1, link[0] == 'D', x, y});
         c = char(c + 1);
     }
 
@@ -86,19 +85,19 @@ Board::Board(string link1_string, string link2_string, string ability1, string a
         if (c == 'D' || c == 'E') {
             y = 1;
         }
-        link2.push_back(Link{c, int(link[1]), link[0] == 'D', x, y});
+        link2.push_back(Link{c, link[1] - '1' + 1, link[0] == 'D', x, y});
         c = char(c + 1);
     }
 
     for (int i = 0; i < BOARD_WIDTH; ++i) {
         if (i == 3 || i == 4) {
-            tiles[0][i].setChar('S');
-            tiles[1][i].setChar(char('A' + i));
-            tiles[BOARD_WIDTH - 1][i].setChar('S');
-            tiles[BOARD_WIDTH - 2][i].setChar(char('a' + i));
+            tiles[i][0].setChar('S');
+            tiles[i][1].setChar(char('A' + i));
+            tiles[i][BOARD_WIDTH - 1].setChar('S');
+            tiles[i][BOARD_WIDTH - 2].setChar(char('a' + i));
         } else {
-            tiles[0][i].setChar(char('A' + i));
-            tiles[BOARD_WIDTH - 1][i].setChar(char('a' + i));
+            tiles[i][0].setChar(char('A' + i));
+            tiles[i][BOARD_WIDTH - 1].setChar(char('a' + i));
         }
     } // TODO Player construction
 }
@@ -196,7 +195,7 @@ void Board::move(char link, Direction dir) {
         auto coord = getCoords(link);
         if (move_helper(link1[link - 'a'], dir, *this)) {
             tiles[coord.first][coord.second].setChar('.');
-            if (link1[link - 'a'].downloadStatus() != NotDownloaded) {
+            if (link1[link - 'a'].downloadStatus() == NotDownloaded) {
                 auto new_coord = getCoords(link);
                 tiles[new_coord.first][new_coord.second].setChar(link);
             }
@@ -205,7 +204,7 @@ void Board::move(char link, Direction dir) {
         auto coord = getCoords(link);
         if (move_helper(link2[link - 'A'], dir, *this)) {
             tiles[coord.first][coord.second].setChar('.');
-            if (link2[link - 'A'].downloadStatus() != NotDownloaded) {
+            if (link2[link - 'A'].downloadStatus() == NotDownloaded) {
                 auto new_coord = getCoords(link);
                 tiles[new_coord.first][new_coord.second].setChar(link);
             }
@@ -248,7 +247,6 @@ void Board::battle(char l1, char l2, int initiator) {
 }
 
 void Board::render(int players_turn) {
-    cout << "IN RENDER" << endl;
     notifyObservers(players_turn);
 }
 
@@ -267,7 +265,7 @@ Player& Board::getPlayer2() {
     return player2;
 }
 
-Link &Board::getLink(char link) {
+Link& Board::getLink(char link) {
     if (islower(link)) {
         return link1[link - 'a'];
     }

@@ -42,12 +42,25 @@ int main(int argc, char* argv[]) {
     }
 
     shared_ptr<Board> board = make_shared<Board>(link1, link2, ability1, ability2);
+    shared_ptr<TextDisplay> textDisplay;
     if (!graphical_display) {
-        shared_ptr<TextDisplay> textDisplay = make_shared<TextDisplay>(board);
+        textDisplay = make_shared<TextDisplay>(board);
         board->attach(textDisplay);
     } // TODO graphical display
 
+    board->move('a', DOWN);
     board->render(1);
-    board->render(2);
+    board->move('a', DOWN);
+    board->render(1);
+    board->move('a', DOWN);
+    board->render(1);
+    board->move('a', DOWN);
+    board->render(1);
+    board->move('a', DOWN);
+    board->render(1);
+    board->move('a', DOWN);
+    board->render(1);
+    board->move('a', DOWN);
+    board->render(1);
 
 }

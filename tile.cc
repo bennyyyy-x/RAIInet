@@ -1,6 +1,6 @@
 #include "tile.h"
 
-Tile::Tile(char c, int firewall) {}
+Tile::Tile(char c, int firewall) : c{c}, firewall{firewall} {}
 
 char Tile::getChar() const {
     if (firewall == 0 || c != '.') {
