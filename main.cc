@@ -254,22 +254,10 @@ bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<
             return false;
 
         case AbilityName::Teleport:
-            if (*in >> link >> x >> y) {
-                if (!isLink(link)) {
-                    board->sendMessage("Invalid link for Teleport");
-                    return false;
+            if (*in >> link) {
+                if (isLink(link)) {
+                    return player.useAbility(id, *board, {to_string(link), to_string(x), to_string(y)});
                 }
-                if (x < 0 || x >= BOARD_WIDTH || y < 0 || y >= BOARD_WIDTH) {
-                    board->sendMessage("Invalid coordinates for Teleport");
-                    return false;
-                }
-                char other = board->getTile(x, y).getChar();
-                if ((isPlayer1Link(link) && isPlayer1Link(other))
-                 || (isPlayer2Link(link) && isPlayer2Link(other))) {
-                    board->sendMessage("Cannot move onto player's own link");
-                    return false;
-                }
-                return player.useAbility(id, *board, {to_string(link), to_string(x), to_string(y)});
             }
             board->sendMessage("Invalid input for Teleport");
             return false;
