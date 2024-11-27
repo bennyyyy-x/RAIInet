@@ -21,7 +21,7 @@ void TextDisplay::notify(int players_turn) {
         //  - It is the link owner's turn
         //  - It is the opponent's turn, but the link is revealed
         if (players_turn == 1 || (players_turn == 2 && b->getLink(c).isRevealed())) {
-            if (b->getLink(c).getType()) { //If is data
+            if (b->getLink(c).getIsData()) { //If is data
                 cout << "D";
             } else {
                 cout << "V";
@@ -60,7 +60,7 @@ void TextDisplay::notify(int players_turn) {
     for (char c = 'A'; c <= 'H'; c++) {
         cout << c << ": ";
         if (players_turn == 2 || (players_turn == 1 && b->getLink(c).isRevealed())) {
-            if (b->getLink(c).getType()) {
+            if (b->getLink(c).getIsData()) {
                 cout << "D";
             } else {
                 cout << "V";

@@ -21,7 +21,7 @@ public:
     //getters
     char getChar() const;
     int getStrength() const;
-    bool getType() const;
+    bool getIsData() const;
     bool isRevealed() const;
     bool isBoosted() const;
     DownloadStatus downloadStatus() const;

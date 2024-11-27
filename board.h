@@ -11,6 +11,10 @@
 
 using namespace std;
 
+bool isPlayer1Link(char link);
+bool isPlayer2Link(char link);
+bool isLink(char link);
+
 class Observer;
 
 class Subject {

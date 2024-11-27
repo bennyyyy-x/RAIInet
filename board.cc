@@ -11,6 +11,21 @@
 using namespace std;
 
 
+bool isPlayer1Link(char link) {
+    return link >= 'a' && link <= 'h';
+}
+
+
+bool isPlayer2Link(char link) {
+    return link >= 'A' && link <= 'H';
+}
+
+
+bool isLink(char link) {
+    return isPlayer1Link(link) || isPlayer2Link(link);
+}
+
+
 void Subject::attach(shared_ptr<Observer> ptr) {
     observers.push_back(ptr);
 }
@@ -76,7 +91,7 @@ string getRandomLinks() {
 
 
 Board::Board(string link1_string, string link2_string, string ability1, string ability2)
-    : tiles{BOARD_WIDTH, vector<Tile>(BOARD_WIDTH)}, player1{ability1}, player2{ability2} {
+    : tiles{BOARD_WIDTH, vector<Tile>(BOARD_WIDTH)}, player1{1, ability1}, player2{2, ability2} {
     if (link1_string == "") {
         link1_string = getRandomLinks();
     }
@@ -156,18 +171,21 @@ void Board::download(DownloadStatus status, const Link& link) {
 
 
 // Return false if move was unable to be made
-bool move_helper(Link& link, Direction dir, Board& board) { // TODO move with boost
+bool move_helper(Link& link, Direction dir, Board& board) {
     // Cannot move downloaded link
     if (link.downloadStatus() != NotDownloaded) {
         return false;
     }
 
-    int tmp_x = link.getX() + convertToX(dir), tmp_y = link.getY() + convertToY(dir);
+    int tmp_x = link.getX() + convertToX(dir) * (link.isBoosted() ? 2 : 1); // Move with boost
+    int tmp_y = link.getY() + convertToY(dir) * (link.isBoosted() ? 2 : 1);
     if (tmp_x < 0 || tmp_x > BOARD_WIDTH - 1) { // Moves off side edge (Illegal)
         return false;
     }
     
     char c = link.getChar();
+    Tile& destination = board.getTile(tmp_x, tmp_y);
+    char other_c = destination.getChar();
     if (tmp_y < 0) { // Moves off bottom edge
         if (isupper(c)) { // Illegal
             return false;
@@ -195,7 +213,6 @@ bool move_helper(Link& link, Direction dir, Board& board) { // TODO move with bo
         link.setDownload(DownloadStatus::ByPlayer1);
         board.download(DownloadStatus::ByPlayer1, link);
     } else if (!board.isEmpty(tmp_x, tmp_y)) { // Moves on top another link
-        char other_c = board.getTile(tmp_x, tmp_y).getChar();
         if (islower(c) == islower(other_c)) { // Same player's link
             return false;
         }
@@ -207,7 +224,26 @@ bool move_helper(Link& link, Direction dir, Board& board) { // TODO move with bo
         return false;
     }
 
-    // TODO Move onto firewall
+    // Move onto firewall
+    if ((destination.getFirewall() == FirewallStatus::Player1s && isPlayer2Link(c))
+     || (destination.getFirewall() == FirewallStatus::Player2s && isPlayer1Link(c))) {
+        link.reveal();
+        if (!link.getIsData()) {
+            DownloadStatus ds = isPlayer1Link(link.getChar()) ? DownloadStatus::ByPlayer1 : DownloadStatus::ByPlayer2;
+            link.setDownload(ds);
+            board.download(ds, link);
+            board.getTile(link.getX(), link.getChar()).setChar('.');
+            return false;
+        }
+        if (isPlayer1Link(c) && isPlayer2Link(other_c)) {
+            board.battle(c, other_c, 1);
+            return false;
+        }
+        if (isPlayer2Link(c) && isPlayer1Link(other_c)) {
+            board.battle(other_c, c, 2);
+            return false;
+        }
+    }
 
     link.setX(tmp_x);
     link.setY(tmp_y);
@@ -217,7 +253,7 @@ bool move_helper(Link& link, Direction dir, Board& board) { // TODO move with bo
 
 // TODO: rememeber to add in input error checking for link chars
 void Board::move(char link, Direction dir) {
-    cout << "Coord for " << link << ": " << getCoords(link).first << ", " << getCoords(link).second << endl;
+    // cout << "Coord for " << link << ": " << getCoords(link).first << ", " << getCoords(link).second << endl;
     if (islower(link)) {
         auto coord = getCoords(link);
         if (move_helper(link1[link - 'a'], dir, *this)) {
@@ -260,8 +296,8 @@ void Board::battle(char l1, char l2, int initiator) {
         other_coords = getCoords(l2);
     }
 
-    cout << "battle_coords" << battle_coords.first << ", " << battle_coords.second << endl;
-    cout << "other_coords" << other_coords.first << ", " << other_coords.second << endl;
+    // cout << "battle_coords" << battle_coords.first << ", " << battle_coords.second << endl;
+    // cout << "other_coords" << other_coords.first << ", " << other_coords.second << endl;
 
     tiles[other_coords.first][other_coords.second].setChar('.');
     

@@ -10,11 +10,12 @@
 using namespace std;
 
 class Player {
+    int player_id;
     vector<Ability> cards;
     int data, virus;
 
 public:
-    Player(string abilities);
+    Player(int id, string abilities);
     void printAbility() const;
     void download(const Link& link);
     int getNumAbilities() const;
