@@ -14,7 +14,7 @@ class Player {
 
 public:
     Player(string abilities);
-    void printAbility();
+    void printAbility() const;
     void download(const Link& link);
     int getNumAbilities() const;
     int getData() const;

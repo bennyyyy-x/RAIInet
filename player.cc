@@ -1,4 +1,8 @@
 #include "player.h"
+#include <iostream>
+#include <iomanip>
+
+using namespace std;
 
 Player::Player(string abilities) : data{0}, virus{0} {
     // TODO construct the abilities
@@ -30,4 +34,12 @@ bool Player::useAbility(int id, Board& board, vector<string> params) {
     }
     cards[id].activate(*this, board, params);
     return true;
+}
+
+
+void Player::printAbility() const {
+    cout  << setw(5) << left << "ID"  << setw(14) << left << "Ability" << "Status" << endl;
+    for (int i = 0; i < 5; ++i) {
+        cout << setw(5) << left << i + 1 << setw(14) << left << cards[i].getName() << (cards[i].isUsed() ? "Used" : "") << endl;
+    }
 }
