@@ -302,8 +302,17 @@ void Board::battle(char l1, char l2, int initiator) {
         other_coords = getCoords(l2);
     }
 
-    // cout << "battle_coords" << battle_coords.first << ", " << battle_coords.second << endl;
-    // cout << "other_coords" << other_coords.first << ", " << other_coords.second << endl;
+    // Update coordinates in Link class
+    if (initiator == 1) {
+        link1[i1].setX(battle_coords.first);
+        link1[i1].setY(battle_coords.second);
+    } else {
+        link2[i2].setX(battle_coords.first);
+        link2[i2].setY(battle_coords.second);
+    }
+
+    cout << "battle_coords" << battle_coords.first << ", " << battle_coords.second << endl;
+    cout << "other_coords" << other_coords.first << ", " << other_coords.second << endl;
 
     tiles[other_coords.first][other_coords.second].setChar('.');
     
