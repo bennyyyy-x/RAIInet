@@ -82,7 +82,7 @@ Scan::Scan() : Ability{AbilityName::SCAN} {}
 
 bool Scan::activate(Player& player, Board& board, vector<string> params) {
     char link = params[0][0];
-    cout<<"in scan, char link: " << params[0] <<endl;
+    // cout << "in scan, char link: " << params[0] << endl;
     board.getLink(link).reveal();
     return true;
 }

@@ -186,14 +186,14 @@ void Board::download(DownloadStatus status, const Link& link) {
 MoveStatus move_helper(Link& link, Direction dir, Board& board) {
     // Cannot move downloaded link
     if (link.downloadStatus() != NotDownloaded) {
-        cout << "Cannot move downloaded link" << endl;
+        // cout << "Cannot move downloaded link" << endl;
         return MoveStatus::IllegalMove;
     }
 
     int tmp_x = link.getX() + convertToX(dir) * (link.isBoosted() ? 2 : 1); // Move with boost
     int tmp_y = link.getY() + convertToY(dir) * (link.isBoosted() ? 2 : 1);
     if (tmp_x < 0 || tmp_x > BOARD_WIDTH - 1) { // Moves off side edge (Illegal)
-        cout << "Move off side edge" << endl;
+        // cout << "Move off side edge" << endl;
         return MoveStatus::IllegalMove;
     }
     
@@ -202,46 +202,46 @@ MoveStatus move_helper(Link& link, Direction dir, Board& board) {
     char other_c = destination.getChar();
     if (tmp_y < 0) { // Moves off bottom edge
         if (isupper(c)) {
-            cout << "bottom edge illegal" << endl;
+            // cout << "bottom edge illegal" << endl;
             return MoveStatus::IllegalMove; // Illegal
         }
         link.setDownload(DownloadStatus::ByPlayer1);
-        cout << "download1" << endl;
+        // cout << "download1" << endl;
         board.download(DownloadStatus::ByPlayer1, link);
         return MoveStatus::NeedTileChange;
     } else if (tmp_y >= BOARD_WIDTH) { // Moves off top edge
         if (islower(c)) {
-            cout << "top edge illegal" << endl;
+            // cout << "top edge illegal" << endl;
             return MoveStatus::IllegalMove; // Illegal
         }
         link.setDownload(DownloadStatus::ByPlayer2);
-        cout << "download2" << endl;
+        // cout << "download2" << endl;
         board.download(DownloadStatus::ByPlayer2, link);
         return MoveStatus::NeedTileChange;
     }
 
     if (tmp_y == 0 && (tmp_x == 3 || tmp_x == 4)) { // Bottom server ports
         if (isupper(c)) {
-            cout << "bottom server port illegal" << endl;
+            // cout << "bottom server port illegal" << endl;
             return MoveStatus::IllegalMove; // Illegal
         }
         link.setDownload(DownloadStatus::ByPlayer2);
-        cout << "download3" << endl;
+        // cout << "download3" << endl;
         board.download(DownloadStatus::ByPlayer2, link);
     } else if (tmp_y == BOARD_WIDTH - 1 && (tmp_x == 3 || tmp_x == 4)) { // Top server ports
         if (islower(c)) {
-            cout << "top server port illegal" << endl;
+            // cout << "top server port illegal" << endl;
             return MoveStatus::IllegalMove; // Illegal
         }
         link.setDownload(DownloadStatus::ByPlayer1);
-        cout << "download4" << endl;
+        // cout << "download4" << endl;
         board.download(DownloadStatus::ByPlayer1, link);
     }
 
     if (isLink(other_c) && isPlayer1Link(c) == isPlayer1Link(other_c)) { // Same player's link
         // cout << "c = " << c << " other_c = " << other_c << endl;
         // cout << "tmp_x = " << tmp_x << " tmp_y = " << tmp_y << endl;
-        cout << "same player link" << endl;
+        // cout << "same player link" << endl;
         return MoveStatus::IllegalMove; // Illegal
     }
 
@@ -251,7 +251,7 @@ MoveStatus move_helper(Link& link, Direction dir, Board& board) {
         if (!link.getIsData()) { // virus gets immediately downloaded by owner
             DownloadStatus ds = isPlayer1Link(link.getChar()) ? DownloadStatus::ByPlayer1 : DownloadStatus::ByPlayer2;
             link.setDownload(ds);
-            cout << "download5" << endl;
+            // cout << "download5" << endl;
             board.download(ds, link);
             board.getTile(link.getX(), link.getY()).setChar('.');
             return MoveStatus::DoNotNeedTileChange;
@@ -330,21 +330,21 @@ void Board::battle(char l1, char l2, int initiator) {
         link2[i2].setY(battle_coords.second);
     }
 
-    cout << "battle_coords" << battle_coords.first << ", " << battle_coords.second << endl;
-    cout << "other_coords" << other_coords.first << ", " << other_coords.second << endl;
+    // cout << "battle_coords" << battle_coords.first << ", " << battle_coords.second << endl;
+    // cout << "other_coords" << other_coords.first << ", " << other_coords.second << endl;
 
     tiles[other_coords.first][other_coords.second].setChar('.');
     
     //if player 1 is winner, player 1 downloads player 2's link
     if ((st1 == st2 && initiator == 1) || st1 > st2) {
         link2[i2].setDownload(DownloadStatus::ByPlayer1);
-        cout << "download6" << endl;
+        // cout << "download6" << endl;
         download(DownloadStatus::ByPlayer1, link2[i2]);
         tiles[battle_coords.first][battle_coords.second].setChar(l1);
         return;
     } 
     link1[i1].setDownload(DownloadStatus::ByPlayer2);
-    cout << "download7" << endl;
+    // cout << "download7" << endl;
     download(DownloadStatus::ByPlayer2, link1[i1]);
     tiles[battle_coords.first][battle_coords.second].setChar(l2);
 }

@@ -13,8 +13,6 @@
 
 using namespace std;
 
-// TODO game ending logic
-
 string tolower(string str) {
     string ans = "";
     for (char c : str) {

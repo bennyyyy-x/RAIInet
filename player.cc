@@ -30,7 +30,7 @@ Player::Player(int id, string abilities) : player_id{id}, data{0}, virus{0} {
 }
 
 void Player::download(const Link& link) {
-    cout << "Player id: " << player_id << " downloading link " << link.getChar() << endl;
+    // cout << "Player id: " << player_id << " downloading link " << link.getChar() << endl;
     if (link.getIsData()) {
         data++;
     } else {
@@ -55,7 +55,7 @@ int Player::getVirus() const { return virus; }
 int Player::getPlayerId() const { return player_id; }
 
 bool Player::useAbility(int id, Board& board, vector<string> params) {
-    cout << "In useAbility, id = " << id << endl; 
+    // cout << "In useAbility, id = " << id << endl; 
     id--;
     if (cards[id]->isUsed()) {
         return false;
@@ -85,7 +85,7 @@ void Player::printAbility() const {
     cout << setw(5) << left << "ID"
          << setw(14) << left << "Ability"
          << "Status" << endl;
-    for (int i = 0; i < 5; ++i) {
+    for (int i = 0; i < ABILITY_CARD_NUMS; ++i) {
         cout << setw(5) << left << i + 1
              << setw(14) << left << convertAbilityName(cards[i]->getName())
              << (cards[i]->isUsed() ? "Used" : "") << endl;
