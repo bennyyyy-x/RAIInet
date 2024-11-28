@@ -239,6 +239,15 @@ string GraphicalDisplay::playerDisplayInfo(Player& player, int info_type, int pl
     return txt;
 }
 
+bool GraphicalDisplay::noLinkOnSquare(int x, int y) const {
+    for (Info linkInfo : linkInfo) {
+        if (x == linkInfo.x && y == linkInfo.y && linkInfo.downloaded == false) {
+            return false;
+        }
+    }
+    return true;
+}
+
 void GraphicalDisplay::notify(int players_turn) {
     if (players_turn == 1) {
         w.drawString(70, 20 , "PLAYER 1", Xwindow::Red);
@@ -249,14 +258,7 @@ void GraphicalDisplay::notify(int players_turn) {
     }
 
     for (FirewallInfo info : b->getFirewallInfo()) {
-        bool noLinkOnFirewall = true;
-        for (Info linkInfo : linkInfo) {
-            if (info.x == linkInfo.x && info.y == linkInfo.y && linkInfo.downloaded == false) {
-                noLinkOnFirewall = false;
-                break;
-            }
-        }
-        if (noLinkOnFirewall) {
+        if (noLinkOnSquare(info.x, info.y)) {
             updateTile(info.x, info.y, info.c);
         }
     }
@@ -281,11 +283,15 @@ void GraphicalDisplay::notify(int players_turn) {
             continue;
         }
         if (info.x != link.getX() || info.y != link.getY() || info.revealed != link.isRevealed()) {
-            updateTile(info.x, info.y, '.');
-            updateTile(link.getX(), link.getY(), link.getChar(), link.isRevealed(), link.getIsData());
+            int x = info.x, y = info.y;
             info.x = link.getX();
             info.y = link.getY();
             info.revealed = link.isRevealed();
+            if (noLinkOnSquare(x, y)) {
+                updateTile(x, y, '.');
+            }
+            updateTile(link.getX(), link.getY(), link.getChar(), link.isRevealed(), link.getIsData());
+            
         }
     }
 

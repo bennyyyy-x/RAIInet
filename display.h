@@ -51,6 +51,7 @@ public:
 
     string playerDisplayInfo(Player& player, int info_type, int players_turn);
     void updateTile(int x, int y, char link, bool isRevealed = false, bool isData = false);
+    bool noLinkOnSquare(int x, int y) const;
 };
 
 #endif // DISPLAY_H_
