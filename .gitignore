@@ -1,6 +1,6 @@
 *.o
 *.d
-project
+raiinet
 .vscode
 a.out
 test.cc
