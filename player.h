@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <memory>
 #include "ability.h"
 #include "link.h"
 #include "constants.h"
@@ -11,7 +12,7 @@ using namespace std;
 
 class Player {
     int player_id;
-    vector<Ability> cards;
+    vector<unique_ptr<Ability>> cards;
     int data, virus;
 
 public:

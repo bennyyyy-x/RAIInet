@@ -8,14 +8,14 @@ enum Direction { Up = 0, Down, Left, Right };
 enum DownloadStatus { NotDownloaded = 0, ByPlayer1, ByPlayer2 };
 
 enum AbilityName {
-    LinkBoost = 0,
-    Firewall,
-    Download,
-    Polarize,
-    Scan,
-    Exchange,
-    Teleport,
-    Hijack
+    LINKBOOST = 0,
+    FIREWALL,
+    DOWNLOAD,
+    POLARIZE,
+    SCAN,
+    EXCHANGE,
+    TELEPORT,
+    HIJACK
 };
 
 const int ABILITY_CARD_NUMS = 5;

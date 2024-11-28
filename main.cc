@@ -35,7 +35,7 @@ Direction convertDir(string dir) {
     throw invalid_argument("direction is not one of up/down/left/right");
 }
 
-bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<istream> in, int& players_turn);
+bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<istream> in, int& players_turn, bool& hijack_enabled);
 
 int main(int argc, char* argv[]) {
     string ability1 = "LFDSP", ability2 = "LFDSP";
@@ -80,6 +80,7 @@ int main(int argc, char* argv[]) {
     input_streams.push(make_shared<istream>(cin.rdbuf()));
     int players_turn = 1;
     bool ability_used = false;
+    bool hijack_enabled = false;
     board->render(players_turn); // Render initially
     
     while (!input_streams.empty()) {
@@ -113,12 +114,12 @@ int main(int argc, char* argv[]) {
                     input_streams.push(in);
                     break;
                 }
-                if (players_turn == 1 && isPlayer2Link(link)) {
+                if (!hijack_enabled && players_turn == 1 && isPlayer2Link(link)) {
                     board->sendMessage("Player 1 cannot move Player 2's link");
                     input_streams.push(in);
                     break;
                 }
-                if (players_turn == 2 && isPlayer1Link(link)) {
+                if (!hijack_enabled && players_turn == 2 && isPlayer1Link(link)) {
                     board->sendMessage("Player 2 cannot move Player 1's link");
                     input_streams.push(in);
                     break;
@@ -137,6 +138,7 @@ int main(int argc, char* argv[]) {
                 if (moveSuccessful) {
                     players_turn = 3 - players_turn; // switch turn
                     ability_used = false;
+                    hijack_enabled = false;
                     board->render(players_turn); // Refresh the board after each move
                 } else {
                     board->sendMessage("Move failed");
@@ -158,7 +160,7 @@ int main(int argc, char* argv[]) {
                     input_streams.push(in);
                     break;
                 }
-                ability_used = ability_helper(board, player, id, in, players_turn);
+                ability_used = ability_helper(board, player, id, in, players_turn, hijack_enabled);
 
             } else if (command == "board") {
                 board->render(players_turn);
@@ -179,14 +181,14 @@ int main(int argc, char* argv[]) {
 }
 
 // return bool whether ability was applied
-bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<istream> in, int& players_turn) {
+bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<istream> in, int& players_turn, bool& hijack_enabled) {
     AbilityName ability = player.getAbilityName(id);
     char link, link1, link2;
     int x, y;
 
     switch (ability) {
 
-        case AbilityName::LinkBoost:
+        case AbilityName::LINKBOOST:
             if (*in >> link) {
                 if ((players_turn == 1 && isPlayer1Link(link))
                     || (players_turn == 2 && isPlayer2Link(link))) {
@@ -196,7 +198,7 @@ bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<
             board->sendMessage("Invalid link ID for link boost");
             return false;
 
-        case AbilityName::Firewall:
+        case AbilityName::FIREWALL:
             if (*in >> x >> y) {
                 if (x < 0 || x >= BOARD_WIDTH || y < 0 || y >= BOARD_WIDTH) {
                     board->sendMessage("Invalid coordinates for firewall");
@@ -212,7 +214,7 @@ bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<
             board->sendMessage("Unable to read coordinates for Firewall");
             return false;
 
-        case AbilityName::Download:
+        case AbilityName::DOWNLOAD:
             if (*in >> link) {
                 if ((players_turn == 2 && isPlayer1Link(link))
                     || (players_turn == 1 && isPlayer2Link(link))) {
@@ -222,7 +224,7 @@ bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<
             board->sendMessage("Invalid link for Download");
             return false;
 
-        case AbilityName::Polarize:
+        case AbilityName::POLARIZE:
             if (*in >> link) {
                 if ((players_turn == 1 && isPlayer1Link(link))
                     || (players_turn == 2 && isPlayer2Link(link))) {
@@ -232,7 +234,7 @@ bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<
             board->sendMessage("Invalid link for Polarize");
             return false;
 
-        case AbilityName::Scan:
+        case AbilityName::SCAN:
             if (*in >> link) {
                 if ((players_turn == 2 && isPlayer1Link(link))
                     || (players_turn == 1 && isPlayer2Link(link))) {
@@ -242,7 +244,7 @@ bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<
             board->sendMessage("Invalid link for Scan");
             return false;
 
-        case AbilityName::Exchange:
+        case AbilityName::EXCHANGE:
             if (*in >> link1 >> link2) {
                 if ((isPlayer1Link(link1) && isPlayer2Link(link2))
                  || (isPlayer2Link(link1) && isPlayer1Link(link2))) {
@@ -252,7 +254,7 @@ bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<
             board->sendMessage("Invalid links for Exchange");
             return false;
 
-        case AbilityName::Teleport:
+        case AbilityName::TELEPORT:
             if (*in >> link) {
                 if (isLink(link)) {
                     return player.useAbility(id, *board, {to_string(link)});
@@ -261,15 +263,9 @@ bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<
             board->sendMessage("Invalid input for Teleport");
             return false;
 
-        case AbilityName::Hijack:
-            if (*in >> link) {
-                if ((players_turn == 1 && isPlayer1Link(link))
-                    || (players_turn == 2 && isPlayer2Link(link))) {
-                    return player.useAbility(id, *board, {to_string(link)});
-                }
-            }
-            board->sendMessage("Invalid link for Hijack");
-            return false;
+        case AbilityName::HIJACK:
+            hijack_enabled = true;
+            return true;
     }
     return false;
 }

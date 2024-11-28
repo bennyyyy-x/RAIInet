@@ -6,9 +6,12 @@
 
 using namespace std;
 
+Ability::Ability(AbilityName name) : used{false}, name{name} {}
 AbilityName Ability::getName() const { return name; }
 bool Ability::isUsed() const{ return used; }
 void Ability::setUsed() { used = true; }
+
+LinkBoost::LinkBoost() : Ability{AbilityName::LINKBOOST} {}
 
 //Returns false if selected link to boost is already downloaded
 bool LinkBoost::activate(Player& player, Board& board, vector<string> params) {
@@ -19,6 +22,8 @@ bool LinkBoost::activate(Player& player, Board& board, vector<string> params) {
     board.getLink(link).boost();
     return true;
 }
+
+Firewall::Firewall() : Ability{AbilityName::FIREWALL} {}
 
 bool Firewall::activate(Player& player, Board& board, vector<string> params) {
     int x = params[0][0], y = params[1][0];
@@ -32,6 +37,8 @@ bool Firewall::activate(Player& player, Board& board, vector<string> params) {
 
     return true;
 }
+
+Download::Download() : Ability{AbilityName::DOWNLOAD} {}
 
 //Returns false if link to download is already downloaded
 bool Download::activate(Player& player, Board& board, vector<string> params) {
@@ -52,6 +59,8 @@ bool Download::activate(Player& player, Board& board, vector<string> params) {
     return true;
 }
 
+Polarize::Polarize() : Ability{AbilityName::POLARIZE} {}
+
 bool Polarize::activate(Player& player, Board& board, vector<string> params) {
     char link = params[0][0];
     if (board.getLink(link).downloadStatus() != NotDownloaded) {
@@ -61,11 +70,15 @@ bool Polarize::activate(Player& player, Board& board, vector<string> params) {
     return true;
 }
 
+Scan::Scan() : Ability{AbilityName::SCAN} {}
+
 bool Scan::activate(Player& player, Board& board, vector<string> params) {
     char link = params[0][0];
     board.getLink(link).reveal();
     return true;
 }
+
+Exchange::Exchange() : Ability{AbilityName::EXCHANGE} {}
 
 bool Exchange::activate(Player& player, Board& board, vector<string> params) {
     char l1 = params[0][0], l2 = params[1][0];
@@ -87,6 +100,8 @@ bool Exchange::activate(Player& player, Board& board, vector<string> params) {
 
     return true;
 }
+
+Teleport::Teleport() : Ability{AbilityName::TELEPORT} {}
 
 //Teleports a link to a random empty (no firewall) valid tile
 bool Teleport::activate(Player& player, Board& board, vector<string> params) {
@@ -121,6 +136,8 @@ bool Teleport::activate(Player& player, Board& board, vector<string> params) {
     board.getLink(link).setY(target.second);
     return true;
 }
+
+Hijack::Hijack() : Ability{AbilityName::HIJACK} {}
 
 bool Hijack::activate(Player& player, Board& board, vector<string> params) {
     return true;
