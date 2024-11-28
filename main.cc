@@ -164,6 +164,9 @@ int main(int argc, char* argv[]) {
                 }
                 ability_used = ability_helper(board, player, id, in, players_turn, hijack_enabled);
                 board->render(players_turn); // render after applying ability
+                if (!ability_used) {
+                    board->sendMessage("Unable to use ability");
+                }
 
             } else if (command == "board") {
                 board->render(players_turn);
@@ -267,8 +270,8 @@ bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<
             return false;
 
         case AbilityName::HIJACK:
-            hijack_enabled = true;
-            return true;
+            hijack_enabled = player.useAbility(id, *board, {});
+            return hijack_enabled;
     }
     return false;
 }

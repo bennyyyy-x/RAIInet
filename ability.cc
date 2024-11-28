@@ -28,7 +28,11 @@ Firewall::Firewall() : Ability{AbilityName::FIREWALL} {}
 
 bool Firewall::activate(Player& player, Board& board, vector<string> params) {
     int x = stoi(params[0]), y = stoi(params[1]);
-    // cout << "x = " << x << " y = " << y << endl;
+
+    if (!board.isEmpty(x, y)) {
+        return false;
+    }
+
     FirewallStatus wallOwner;
     if (player.getPlayerId() == 1) {
         wallOwner = Player1s;
