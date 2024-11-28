@@ -190,7 +190,7 @@ string GraphicalDisplay::playerDisplayInfo(Player& player, int info_type, int pl
         txt += to_string(player.getVirus()) + "V";
         return txt;
     } else if (info_type == 1) { //Num abilities left info
-        txt += "ABILITIES:   " + to_string(player.getNumAbilities());
+        txt += "ABILITIES:    " + to_string(player.getNumAbilities());
         return txt;
     } else { //Displaying links info
         char start, end;

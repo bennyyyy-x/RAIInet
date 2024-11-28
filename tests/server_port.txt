@@ -1,0 +1,11 @@
+move d down
+move D left
+move d down
+move D left
+move d down
+move D left
+move d down
+move D right
+move d down
+move D left
+move d down
