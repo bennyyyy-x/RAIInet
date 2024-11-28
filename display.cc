@@ -83,7 +83,26 @@ void TextDisplay::message(string message) {
 }
 
 void TextDisplay::end(int winner) {
-    cout << "WINNER: PLAYER " << winner << endl;
+    for (int i = 0; i < 30; ++i) {
+        cout << "+";
+    }
+    cout << endl;
+    for (int i = 0; i < 30; ++i) {
+        cout << "-";
+    }
+    cout << endl;
+    cout << "       _.+._" << endl;
+    cout << "     (^\\/^\\/^)     WINNER:" << endl;
+    cout << "      \\@*@*@/     PLAYER " << winner << "!!!" << endl;
+    cout << "      {_____}" << endl;
+    for (int i = 0; i < 30; ++i) {
+        cout << "-";
+    }
+    cout << endl;
+    for (int i = 0; i < 30; ++i) {
+        cout << "+";
+    }
+    cout << endl;
 }
 
 int convertX(int x) {
@@ -173,10 +192,6 @@ GraphicalDisplay::GraphicalDisplay(shared_ptr<Board> b, int width, int height) :
 
     w.fillRectangle(0, 100 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, BOARD_WIDTH_GRAPH, 30, Xwindow::Black);
     w.drawString(70, 120 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "PLAYER 2", Xwindow::White);
-
-    w.fillRectangle(BOARD_CORNER_X, BOARD_CORNER_Y, BOARD_WIDTH_GRAPH, BOARD_WIDTH_GRAPH, Xwindow::Green);
-    w.drawString(37, 210, "PLAYER 1 HAS WON!!!", Xwindow::White);
-    w.drawString(15, 250, "Enter 'quit' to exit game.", Xwindow::White);
 }
 
 
@@ -332,6 +347,8 @@ void GraphicalDisplay::message(string msg) {
 void GraphicalDisplay::end(int winner) {
     string winning_txt = "PLAYER " + to_string(winner) + " HAS WON!!!";
     w.fillRectangle(BOARD_CORNER_X, BOARD_CORNER_Y, BOARD_WIDTH_GRAPH, BOARD_WIDTH_GRAPH, Xwindow::Blue);
-    w.drawString(37, 210, winning_txt, Xwindow::White);
-    w.drawString(17, 250, "Enter 'quit' to exit game.", Xwindow::White);
+    w.fillRectangle(BOARD_CORNER_X+10, BOARD_CORNER_Y+10, BOARD_WIDTH_GRAPH-20, BOARD_WIDTH_GRAPH-20, Xwindow::White);
+    w.fillRectangle(BOARD_CORNER_X+20, BOARD_CORNER_Y+20, BOARD_WIDTH_GRAPH-40, BOARD_WIDTH_GRAPH-40, Xwindow::Green);
+    w.drawString(37, 210, winning_txt, Xwindow::Blue);
+    w.drawString(33, 250, "'quit' to exit game", Xwindow::Blue);
 }
