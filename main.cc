@@ -13,6 +13,8 @@
 
 using namespace std;
 
+// TODO game ending logic
+
 string tolower(string str) {
     string ans = "";
     for (char c : str) {
@@ -155,7 +157,7 @@ int main(int argc, char* argv[]) {
                 }
                 int id;
                 *in >> id;
-                if (id < 0 || id >= ABILITY_CARD_NUMS) {
+                if (id <= 0 || id > ABILITY_CARD_NUMS) {
                     board->sendMessage("Invalid ability card id: " + to_string(id));
                     input_streams.push(in);
                     break;

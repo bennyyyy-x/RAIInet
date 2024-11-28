@@ -46,6 +46,7 @@ int Player::getVirus() const { return virus; }
 int Player::getPlayerId() const { return player_id; }
 
 bool Player::useAbility(int id, Board& board, vector<string> params) {
+    id--;
     if (cards[id]->isUsed()) {
         return false;
     }
@@ -56,13 +57,27 @@ bool Player::useAbility(int id, Board& board, vector<string> params) {
     return success;
 }
 
+string convertAbilityName(AbilityName name) {
+    switch (name) {
+        case AbilityName::LINKBOOST: return "Link Boost";
+        case AbilityName::FIREWALL: return "Firewall";
+        case AbilityName::DOWNLOAD: return "Download";
+        case AbilityName::POLARIZE: return "Polarize";
+        case AbilityName::SCAN: return "Scan";
+        case AbilityName::EXCHANGE: return "Exchange";
+        case AbilityName::TELEPORT: return "Teleport";
+        case AbilityName::HIJACK: return "Hijack";
+    }
+    return "Error";
+}
+
 void Player::printAbility() const {
     cout << setw(5) << left << "ID"
          << setw(14) << left << "Ability"
          << "Status" << endl;
     for (int i = 0; i < 5; ++i) {
         cout << setw(5) << left << i + 1
-             << setw(14) << left << cards[i]->getName()
+             << setw(14) << left << convertAbilityName(cards[i]->getName())
              << (cards[i]->isUsed() ? "Used" : "") << endl;
     }
 }
