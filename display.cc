@@ -94,22 +94,22 @@ GraphicalDisplay::Info::Info(int x, int y, bool downloaded) : x{x}, y{y}, downlo
 
 GraphicalDisplay::Info GraphicalDisplay::getInfo(char link) {
     if (isPlayer1Link(link)) {
-        return linkInformation[link - 'a'];
+        return linkInfo[link - 'a'];
     } else {
-        return linkInformation[link - 'A' + 8];
+        return linkInfo[link - 'A' + 8];
     }
 }
 
 
 void GraphicalDisplay::updateCoord(char link, int x, int y, bool downloaded) {
     if (isPlayer1Link(link)) {
-        linkInformation[link - 'a'].x = x;
-        linkInformation[link - 'a'].y = y;
-        linkInformation[link - 'a'].downloaded = downloaded;
+        linkInfo[link - 'a'].x = x;
+        linkInfo[link - 'a'].y = y;
+        linkInfo[link - 'a'].downloaded = downloaded;
     } else {
-        linkInformation[link - 'A' + 8].x = x;
-        linkInformation[link - 'A' + 8].y = y;
-        linkInformation[link - 'A' + 8].downloaded = downloaded;
+        linkInfo[link - 'A' + 8].x = x;
+        linkInfo[link - 'A' + 8].y = y;
+        linkInfo[link - 'A' + 8].downloaded = downloaded;
     }
 }
 
@@ -117,19 +117,29 @@ void GraphicalDisplay::updateCoord(char link, int x, int y, bool downloaded) {
 GraphicalDisplay::GraphicalDisplay(shared_ptr<Board> b, int width, int height) : b{b}, w{width, height} {
     for (int i = 0; i < 8; ++i) {
         Link& link = b->getLink(char('a' + i));
-        linkInformation.push_back({link.getX(), link.getY(), link.downloadStatus() != DownloadStatus::NotDownloaded});
+        linkInfo.push_back({link.getX(), link.getY(), link.downloadStatus() != DownloadStatus::NotDownloaded});
     }
     for (int i = 0; i < 8; ++i) {
         Link& link = b->getLink(char('A' + i));
-        linkInformation.push_back({link.getX(), link.getY(), link.downloadStatus() != DownloadStatus::NotDownloaded});
+        linkInfo.push_back({link.getX(), link.getY(), link.downloadStatus() != DownloadStatus::NotDownloaded});
     }
+
+    playerInfo.push_back(playerDisplayInfo(b->getPlayer1(), 0, 1));
+    playerInfo.push_back(playerDisplayInfo(b->getPlayer1(), 1, 1));
+    playerInfo.push_back(playerDisplayInfo(b->getPlayer1(), 2, 1));
+    playerInfo.push_back(playerDisplayInfo(b->getPlayer1(), 3, 1));
+
+    playerInfo.push_back(playerDisplayInfo(b->getPlayer2(), 0, 1));
+    playerInfo.push_back(playerDisplayInfo(b->getPlayer2(), 1, 1));
+    playerInfo.push_back(playerDisplayInfo(b->getPlayer2(), 2, 1));
+    playerInfo.push_back(playerDisplayInfo(b->getPlayer2(), 3, 1));
 
     w.fillRectangle(0, 0, BOARD_WIDTH_GRAPH, 30, Xwindow::Black);
     w.drawString(70, 20 , "PLAYER 1", Xwindow::White);
-    w.drawString(10, 50, "DOWNLOADED:   0D, 0V", Xwindow::Black);
-    w.drawString(10, 70, "ABILITIES:    5", Xwindow::Black);
-    w.drawString(10, 90, "a: V1 b: D4 c: V3 d: V2", Xwindow::Black);
-    w.drawString(10, 110, "e: D3 f: V4 g: D2 h: D1", Xwindow::Black);
+    w.drawString(10, 50, playerInfo[0], Xwindow::Black);
+    w.drawString(10, 70, playerInfo[1], Xwindow::Black);
+    w.drawString(10, 90, playerInfo[2], Xwindow::Black);
+    w.drawString(10, 110, playerInfo[3], Xwindow::Black);
 
     w.fillRectangle(BOARD_CORNER_X, BOARD_CORNER_Y - 5, BOARD_WIDTH_GRAPH, 5, Xwindow::Black); // Top edge
     w.fillRectangle(BOARD_CORNER_X, BOARD_CORNER_Y, BOARD_WIDTH_GRAPH, BOARD_WIDTH_GRAPH, Xwindow::Black); // Entire board
@@ -150,10 +160,11 @@ GraphicalDisplay::GraphicalDisplay(shared_ptr<Board> b, int width, int height) :
 
     w.fillRectangle(0, 100 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, BOARD_WIDTH_GRAPH, 30, Xwindow::Black);
     w.drawString(70, 120 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "PLAYER 2", Xwindow::White);
-    w.drawString(10, 30 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "DOWNLOADED:   0D, 0V", Xwindow::Black);
-    w.drawString(10, 50 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "ABILITIES:    5", Xwindow::Black);
-    w.drawString(10, 70 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "a: ?  b: ?  c: ?  d: ? ", Xwindow::Black);
-    w.drawString(10, 90 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "e: ?  f: ?  g: ?  h: ? ", Xwindow::Black);
+
+    w.drawString(10, 30 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, playerInfo[4], Xwindow::Black);
+    w.drawString(10, 50 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, playerInfo[5], Xwindow::Black);
+    w.drawString(10, 70 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, playerInfo[6], Xwindow::Black);
+    w.drawString(10, 90 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, playerInfo[7], Xwindow::Black);
 
 }
 
@@ -203,12 +214,12 @@ string GraphicalDisplay::playerDisplayInfo(Player& player, int info_type, int pl
         }
         //If printing for player 2, convert to uppercase
         if (player.getPlayerId() == 2) {
-            start -= ('a' - 'A');
-            end -= ('a' - 'A');
+            start = toupper(start);
+            end = toupper(end);
         }
 
         for (char c = start; c <= end; ++c) {
-            txt += to_string(c) + ": ";
+            txt += string(1, c) + ": ";
 
             bool revealSafe = false;
             if (players_turn == player.getPlayerId()) { //if link owners turn
@@ -222,7 +233,7 @@ string GraphicalDisplay::playerDisplayInfo(Player& player, int info_type, int pl
                 } else {
                     txt += "V";
                 }
-                txt += b->getLink(c).getStrength() + " ";
+                txt += to_string(b->getLink(c).getStrength()) + " ";
             } else {
                 txt += "?  ";
             }
@@ -233,6 +244,7 @@ string GraphicalDisplay::playerDisplayInfo(Player& player, int info_type, int pl
 
 void GraphicalDisplay::notify(int players_turn) {
     cout << "In Graphical Notify" << endl;
+
     if (players_turn == 1) {
         w.drawString(70, 20 , "PLAYER 1", Xwindow::Red);
         w.drawString(70, 120 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "PLAYER 2", Xwindow::White);
@@ -242,7 +254,7 @@ void GraphicalDisplay::notify(int players_turn) {
     }
 
     for (int i = 0; i < BOARD_WIDTH; ++i) {
-        Info& info = linkInformation[i];
+        Info& info = linkInfo[i];
         Link& link = b->getLink(char('a' + i));
         if (info.downloaded) {
             continue;
@@ -261,7 +273,7 @@ void GraphicalDisplay::notify(int players_turn) {
     }
 
     for (int i = 0; i < BOARD_WIDTH; ++i) {
-        Info& info = linkInformation[i + 8];
+        Info& info = linkInfo[i + 8];
         Link& link = b->getLink(char('A' + i));
         if (info.downloaded) {
             continue;
@@ -279,6 +291,7 @@ void GraphicalDisplay::notify(int players_turn) {
         }
     }
 }
+
 
 void GraphicalDisplay::message(string msg) {
     cout << msg << endl;

@@ -33,7 +33,8 @@ class GraphicalDisplay : public Observer {
         Info(int x, int y, bool downloaded);
     };
 
-    vector<Info> linkInformation;
+    vector<Info> linkInfo;
+    vector<string> playerInfo;
     Info getInfo(char link);
     void updateCoord(char link, int x, int y, bool downloaded);
 
