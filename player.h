@@ -21,6 +21,7 @@ public:
     int getNumAbilities() const;
     int getData() const;
     int getVirus() const;
+    int getPlayerId() const;
     bool useAbility(int id, Board& board, vector<string> params);
     AbilityName getAbilityName(int id);
 };
