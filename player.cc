@@ -9,6 +9,7 @@ Player::Player(int id, string abilities) : player_id{id}, data{0}, virus{0} {
 }
 
 void Player::download(const Link& link) {
+    cout << "Player id: " << player_id << " downloading link " << link.getChar() << endl;
     if (link.getIsData()) {
         data++;
     } else {
