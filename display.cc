@@ -124,22 +124,17 @@ GraphicalDisplay::GraphicalDisplay(shared_ptr<Board> b, int width, int height) :
         linkInfo.push_back({link.getX(), link.getY(), link.downloadStatus() != DownloadStatus::NotDownloaded});
     }
 
-    playerInfo.push_back(playerDisplayInfo(b->getPlayer1(), 0, 1));
-    playerInfo.push_back(playerDisplayInfo(b->getPlayer1(), 1, 1));
-    playerInfo.push_back(playerDisplayInfo(b->getPlayer1(), 2, 1));
-    playerInfo.push_back(playerDisplayInfo(b->getPlayer1(), 3, 1));
-
-    playerInfo.push_back(playerDisplayInfo(b->getPlayer2(), 0, 1));
-    playerInfo.push_back(playerDisplayInfo(b->getPlayer2(), 1, 1));
-    playerInfo.push_back(playerDisplayInfo(b->getPlayer2(), 2, 1));
-    playerInfo.push_back(playerDisplayInfo(b->getPlayer2(), 3, 1));
-
     w.fillRectangle(0, 0, BOARD_WIDTH_GRAPH, 30, Xwindow::Black);
     w.drawString(70, 20 , "PLAYER 1", Xwindow::White);
-    w.drawString(10, 50, playerInfo[0], Xwindow::Black);
-    w.drawString(10, 70, playerInfo[1], Xwindow::Black);
-    w.drawString(10, 90, playerInfo[2], Xwindow::Black);
-    w.drawString(10, 110, playerInfo[3], Xwindow::Black);
+
+    for (int i = 0; i < 8; ++i) {
+        if (i < 4) {
+            playerInfo.push_back(playerDisplayInfo(b->getPlayer1(), i, 1));
+        } else {
+            playerInfo.push_back(playerDisplayInfo(b->getPlayer2(), i - 4, 1));
+        }
+        w.drawString(PLAYER_INFO_COORD[i][0], PLAYER_INFO_COORD[i][1], playerInfo[i], Xwindow::Black);
+    }
 
     w.fillRectangle(BOARD_CORNER_X, BOARD_CORNER_Y - 5, BOARD_WIDTH_GRAPH, 5, Xwindow::Black); // Top edge
     w.fillRectangle(BOARD_CORNER_X, BOARD_CORNER_Y, BOARD_WIDTH_GRAPH, BOARD_WIDTH_GRAPH, Xwindow::Black); // Entire board
@@ -160,12 +155,6 @@ GraphicalDisplay::GraphicalDisplay(shared_ptr<Board> b, int width, int height) :
 
     w.fillRectangle(0, 100 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, BOARD_WIDTH_GRAPH, 30, Xwindow::Black);
     w.drawString(70, 120 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "PLAYER 2", Xwindow::White);
-
-    w.drawString(10, 30 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, playerInfo[4], Xwindow::Black);
-    w.drawString(10, 50 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, playerInfo[5], Xwindow::Black);
-    w.drawString(10, 70 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, playerInfo[6], Xwindow::Black);
-    w.drawString(10, 90 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, playerInfo[7], Xwindow::Black);
-
 }
 
 
@@ -288,6 +277,16 @@ void GraphicalDisplay::notify(int players_turn) {
             updateTile(link.getX(), link.getY(), link.getChar(), link.isRevealed(), link.getIsData());
             info.x = link.getX();
             info.y = link.getY();
+        }
+    }
+
+    // update player information
+    for (int i = 0; i < 8; ++i) {
+        string updated = playerDisplayInfo(i < 4 ? b->getPlayer1() : b->getPlayer2(), i % 4, players_turn);
+        if (updated != playerInfo[i]) {
+            playerInfo[i] = updated;
+            w.fillRectangle(PLAYER_INFO_COORD[i][0], PLAYER_INFO_COORD[i][1] - 10, BOARD_WIDTH_GRAPH, 15, Xwindow::White);
+            w.drawString(PLAYER_INFO_COORD[i][0], PLAYER_INFO_COORD[i][1], playerInfo[i], Xwindow::Black);
         }
     }
 }
