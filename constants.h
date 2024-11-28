@@ -24,4 +24,8 @@ enum FirewallStatus { NoFirewall = 0, Player1s, Player2s };
 
 enum MoveStatus { IllegalMove = 0, NeedTileChange, DoNotNeedTileChange };
 
+const int BOARD_CORNER_X = 0, BOARD_CORNER_Y = 125;
+const int TILE_WIDTH = 20, LINE_WIDTH = 2;
+const int BOARD_WIDTH_GRAPH = BOARD_WIDTH * TILE_WIDTH + (BOARD_WIDTH + 1) * LINE_WIDTH;
+
 #endif // CONSTANTS_H_

@@ -1,5 +1,6 @@
 #include "display.h"
 #include "board.h"
+#include "constants.h"
 #include <iostream>
 #include <string>
 #include <memory>
@@ -77,4 +78,77 @@ void TextDisplay::notify(int players_turn) {
 
 void TextDisplay::message(string message) {
     cout << message << endl;
+}
+
+GraphicalDisplay::Info::Info(int x, int y, bool downloaded) : x{x}, y{y}, downloaded{downloaded} {}
+
+GraphicalDisplay::Info GraphicalDisplay::getInfo(char link) {
+    if (isPlayer1Link(link)) {
+        return linkInformation[link - 'a'];
+    } else {
+        return linkInformation[link - 'A' + 8];
+    }
+}
+
+void GraphicalDisplay::updateCoord(char link, int x, int y, bool downloaded) {
+    if (isPlayer1Link(link)) {
+        linkInformation[link - 'a'].x = x;
+        linkInformation[link - 'a'].y = y;
+        linkInformation[link - 'a'].downloaded = downloaded;
+    } else {
+        linkInformation[link - 'A' + 8].x = x;
+        linkInformation[link - 'A' + 8].y = y;
+        linkInformation[link - 'A' + 8].downloaded = downloaded;
+    }
+}
+
+GraphicalDisplay::GraphicalDisplay(shared_ptr<Board> b, int width, int height) : b{b}, w{width, height} {
+    for (int i = 0; i < 8; ++i) {
+        Link& link = b->getLink(char('a' + i));
+        linkInformation.push_back({link.getX(), link.getY(), link.downloadStatus() != DownloadStatus::NotDownloaded});
+    }
+    for (int i = 0; i < 8; ++i) {
+        Link& link = b->getLink(char('A' + i));
+        linkInformation.push_back({link.getX(), link.getY(), link.downloadStatus() != DownloadStatus::NotDownloaded});
+    }
+
+    w.fillRectangle(0, 0, BOARD_WIDTH_GRAPH, 30, Xwindow::Black);
+    w.drawString(70, 20 , "PLAYER 1", Xwindow::White);
+    w.drawString(10, 50, "DOWNLOADED:   1D, 3V", Xwindow::Black);
+    w.drawString(10, 70, "ABILITIES:    5", Xwindow::Black);
+    w.drawString(10, 90, "a: V1 b: D4 c: V3 d: V2", Xwindow::Black);
+    w.drawString(10, 110, "e: D3 f: V4 g: D2 h: D1", Xwindow::Black);
+
+    w.fillRectangle(BOARD_CORNER_X, BOARD_CORNER_Y - 5, BOARD_WIDTH_GRAPH, 5, Xwindow::Black); // Top edge
+    w.fillRectangle(BOARD_CORNER_X, BOARD_CORNER_Y, BOARD_WIDTH_GRAPH, BOARD_WIDTH_GRAPH, Xwindow::Black); // Entire board
+    for (int y = 0; y < BOARD_WIDTH; ++y) {
+        for (int x = 0; x < BOARD_WIDTH; ++x) {
+
+            
+            int corner_x = (x + 1) * LINE_WIDTH + x * TILE_WIDTH + BOARD_CORNER_X;
+            int corner_y = (y + 1) * LINE_WIDTH + y * TILE_WIDTH + BOARD_CORNER_Y;
+            if ((x == 3 || x == 4) && (y == 0 || y == 7)) {
+                w.fillRectangle(corner_x, corner_y, TILE_WIDTH, TILE_WIDTH, Xwindow::Blue); // Server port
+            } else {
+                w.fillRectangle(corner_x, corner_y, TILE_WIDTH, TILE_WIDTH, Xwindow::White);
+            }
+        }
+    }
+    w.fillRectangle(BOARD_CORNER_X, BOARD_CORNER_Y + BOARD_WIDTH_GRAPH, BOARD_WIDTH_GRAPH, 5, Xwindow::Black); // Bottom edge
+
+    w.fillRectangle(0, 100 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, BOARD_WIDTH_GRAPH, 30, Xwindow::Black);
+    w.drawString(70, 120 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "PLAYER 2", Xwindow::White);
+    w.drawString(10, 30 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "DOWNLOADED:   1D, 3V", Xwindow::Black);
+    w.drawString(10, 50 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "ABILITIES:    5", Xwindow::Black);
+    w.drawString(10, 70 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "a: V1 b: D4 c: V3 d: V2", Xwindow::Black);
+    w.drawString(10, 90 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "e: D3 f: V4 g: D2 h: D1", Xwindow::Black);
+
+}
+
+void GraphicalDisplay::notify(int players_turn) {
+
+}
+
+void GraphicalDisplay::message(string msg) {
+
 }

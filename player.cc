@@ -22,7 +22,7 @@ int Player::getData() const { return data; }
 
 int Player::getVirus() const { return virus; }
 
-int Player::getPlayerId() const { return player_id };
+int Player::getPlayerId() const { return player_id; }
 
 bool Player::useAbility(int id, Board& board, vector<string> params) {
     if (cards[id].isUsed()) {

@@ -2,6 +2,7 @@
 #define DISPLAY_H_
 #include "board.h"
 #include "window.h"
+#include <vector>
 #include <memory>
 
 using namespace std;
@@ -21,13 +22,29 @@ public:
 };
 
 class GraphicalDisplay : public Observer {
-    Board *b; // TODO use shared_ptr
+    shared_ptr<Board> b;
     Xwindow w;
+
+    class Info {
+        int x, y;
+        bool downloaded;
+        friend class GraphicalDisplay;
+    public:
+        Info(int x, int y, bool downloaded);
+    };
+
+    vector<Info> linkInformation;
+    Info getInfo(char link);
+    void updateCoord(char link, int x, int y, bool downloaded);
+
 public:
-    //TODO make ctor
+    // Constructor should draw out the base board
+    GraphicalDisplay(shared_ptr<Board> b, int width=500, int height=500);
+
+    // notify should compare the coordinates of each link, and redraw only if the coordinates changed
+    // also depending on players_turn, cover or show the type and strength of links
     void notify(int players_turn) override;
     void message(string msg) override;
-
 };
 
 #endif // DISPLAY_H_

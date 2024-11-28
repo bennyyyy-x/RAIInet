@@ -67,10 +67,13 @@ int main(int argc, char* argv[]) {
 
     shared_ptr<Board> board = make_shared<Board>(link1, link2, ability1, ability2);
     shared_ptr<TextDisplay> textDisplay;
+    shared_ptr<GraphicalDisplay> graphicalDisplay;
     if (!graphical_display) {
         textDisplay = make_shared<TextDisplay>(board);
         board->attach(textDisplay);
-    } // TODO graphical display
+    } else {
+        graphicalDisplay = make_shared<GraphicalDisplay>(board, BOARD_WIDTH_GRAPH, 130 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y);
+    }
 
     stack<shared_ptr<istream>> input_streams;
     input_streams.push(make_shared<istream>(cin.rdbuf()));
