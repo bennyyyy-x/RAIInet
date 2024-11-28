@@ -10,6 +10,7 @@ using namespace std;
 TextDisplay::TextDisplay(shared_ptr<Board> b) : b{b} {}
 
 void TextDisplay::notify(int players_turn) {
+    cout << endl;
     cout << "Player 1:" << endl;
     cout << "Downloaded: ";
     cout << b->getPlayer1().getData() << "D, " << b->getPlayer1().getVirus() << "V" << endl;
@@ -74,6 +75,7 @@ void TextDisplay::notify(int players_turn) {
             cout << endl;
         }
     }
+    cout<<endl;
 }
 
 void TextDisplay::message(string message) {
@@ -171,6 +173,10 @@ GraphicalDisplay::GraphicalDisplay(shared_ptr<Board> b, int width, int height) :
 
     w.fillRectangle(0, 100 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, BOARD_WIDTH_GRAPH, 30, Xwindow::Black);
     w.drawString(70, 120 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "PLAYER 2", Xwindow::White);
+
+    w.fillRectangle(BOARD_CORNER_X, BOARD_CORNER_Y, BOARD_WIDTH_GRAPH, BOARD_WIDTH_GRAPH, Xwindow::Green);
+    w.drawString(37, 210, "PLAYER 1 HAS WON!!!", Xwindow::White);
+    w.drawString(15, 250, "Enter 'quit' to exit game.", Xwindow::White);
 }
 
 
@@ -324,5 +330,8 @@ void GraphicalDisplay::message(string msg) {
 }
 
 void GraphicalDisplay::end(int winner) {
-    w.fillRectangle(0, convertY(5), BOARD_WIDTH_GRAPH, 50, Xwindow::Red);
+    string winning_txt = "PLAYER " + to_string(winner) + " HAS WON!!!";
+    w.fillRectangle(BOARD_CORNER_X, BOARD_CORNER_Y, BOARD_WIDTH_GRAPH, BOARD_WIDTH_GRAPH, Xwindow::Blue);
+    w.drawString(37, 210, winning_txt, Xwindow::White);
+    w.drawString(17, 250, "Enter 'quit' to exit game.", Xwindow::White);
 }
