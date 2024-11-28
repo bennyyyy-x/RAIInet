@@ -31,11 +31,22 @@ public:
     void sendMessage(string message);
 };
 
+class FirewallInfo {
+    int x, y;
+    char c;
+public:
+    FirewallInfo(int x, int y, char c);
+    friend class Board;
+    friend class GraphicalDisplay;
+};
+
 class Board : public Subject {
     vector<vector<Tile>> tiles;
     vector<Link> link1;
     vector<Link> link2;
-    Player player1, player2; // TODO Initialize players in board constructor
+    Player player1, player2;
+
+    vector<FirewallInfo> firewallInfo;
 
 public:
     // Sample string for link1/link2: "V1 D4 V3 V2 D3 V4 D2 D1"
@@ -55,6 +66,9 @@ public:
     Player& getPlayer2();
     Link& getLink(char link);
     Tile& getTile(int x, int y);
+
+    void addFirewall(int x, int y, char c);
+    vector<FirewallInfo>& getFirewallInfo();
 };
 
 #endif // BOARD_H_

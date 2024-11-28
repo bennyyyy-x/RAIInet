@@ -89,7 +89,9 @@ int convertY(int y) {
     return y * TILE_WIDTH + (y + 1) * LINE_WIDTH + BOARD_CORNER_Y;
 }
 
-GraphicalDisplay::Info::Info(int x, int y, bool downloaded) : x{x}, y{y}, downloaded{downloaded} {}
+
+GraphicalDisplay::Info::Info(int x, int y, bool downloaded, bool revealed)
+    : x{x}, y{y}, downloaded{downloaded}, revealed{revealed} {}
 
 
 GraphicalDisplay::Info GraphicalDisplay::getInfo(char link) {
@@ -101,15 +103,17 @@ GraphicalDisplay::Info GraphicalDisplay::getInfo(char link) {
 }
 
 
-void GraphicalDisplay::updateCoord(char link, int x, int y, bool downloaded) {
+void GraphicalDisplay::updateCoord(char link, int x, int y, bool downloaded, bool revealed) {
     if (isPlayer1Link(link)) {
         linkInfo[link - 'a'].x = x;
         linkInfo[link - 'a'].y = y;
         linkInfo[link - 'a'].downloaded = downloaded;
+        linkInfo[link - 'a'].revealed = revealed;
     } else {
         linkInfo[link - 'A' + 8].x = x;
         linkInfo[link - 'A' + 8].y = y;
         linkInfo[link - 'A' + 8].downloaded = downloaded;
+        linkInfo[link - 'A' + 8].revealed = revealed;
     }
 }
 
@@ -117,11 +121,11 @@ void GraphicalDisplay::updateCoord(char link, int x, int y, bool downloaded) {
 GraphicalDisplay::GraphicalDisplay(shared_ptr<Board> b, int width, int height) : b{b}, w{width, height} {
     for (int i = 0; i < 8; ++i) {
         Link& link = b->getLink(char('a' + i));
-        linkInfo.push_back({link.getX(), link.getY(), link.downloadStatus() != DownloadStatus::NotDownloaded});
+        linkInfo.push_back({link.getX(), link.getY(), link.downloadStatus() != DownloadStatus::NotDownloaded, false});
     }
     for (int i = 0; i < 8; ++i) {
         Link& link = b->getLink(char('A' + i));
-        linkInfo.push_back({link.getX(), link.getY(), link.downloadStatus() != DownloadStatus::NotDownloaded});
+        linkInfo.push_back({link.getX(), link.getY(), link.downloadStatus() != DownloadStatus::NotDownloaded, false});
     }
 
     w.fillRectangle(0, 0, BOARD_WIDTH_GRAPH, 30, Xwindow::Black);
@@ -166,12 +170,14 @@ void GraphicalDisplay::updateTile(int x, int y, char link, bool isRevealed, bool
         w.fillRectangle(convertX(x), convertY(y), TILE_WIDTH, TILE_WIDTH, Xwindow::White);
         return;
     }
-    if (!isLink(link)) {
+    if (!isLink(link) && link != 'w' && link != 'm') {
         return;
     }
     w.fillRectangle(convertX(x), convertY(y), TILE_WIDTH, TILE_WIDTH, Xwindow::White);
     int color = Xwindow::Black;
-    if (isRevealed) {
+    if (link == 'w' || link == 'm') {
+        color = Xwindow::Blue;
+    } else if (isRevealed) {
         if (isData) {
             color = Xwindow::Green;
         } else {
@@ -233,7 +239,7 @@ string GraphicalDisplay::playerDisplayInfo(Player& player, int info_type, int pl
     return txt;
 }
 
-void GraphicalDisplay::notify(int players_turn) {
+void GraphicalDisplay::notify(int players_turn) { // TODO graphical display firewall
     if (players_turn == 1) {
         w.drawString(70, 20 , "PLAYER 1", Xwindow::Red);
         w.drawString(70, 120 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "PLAYER 2", Xwindow::White);
@@ -242,10 +248,13 @@ void GraphicalDisplay::notify(int players_turn) {
         w.drawString(70, 20 , "PLAYER 1", Xwindow::White);
     }
 
-    //Update player1 link info
-    for (int i = 0; i < BOARD_WIDTH; ++i) {
+    for (FirewallInfo info : b->getFirewallInfo()) {
+        updateTile(info.x, info.y, info.c);
+    }
+
+    for (int i = 0; i < BOARD_WIDTH * 2; ++i) {
         Info& info = linkInfo[i];
-        Link& link = b->getLink(char('a' + i));
+        Link& link = i < 8 ? b->getLink(char('a' + i)) : b->getLink(char('A' + i - 8));
         if (info.downloaded) {
             continue;
         }
@@ -254,35 +263,24 @@ void GraphicalDisplay::notify(int players_turn) {
             updateTile(info.x, info.y, '.');
             continue;
         }
-        if (info.x != link.getX() || info.y != link.getY()) {
-            updateTile(info.x, info.y, '.');
-            updateTile(link.getX(), link.getY(), link.getChar(), link.isRevealed(), link.getIsData());
-            info.x = link.getX();
-            info.y = link.getY();
-        }
     }
 
-    //Update player 2 link info
-    for (int i = 0; i < BOARD_WIDTH; ++i) {
-        Info& info = linkInfo[i + 8];
-        Link& link = b->getLink(char('A' + i));
+    for (int i = 0; i < BOARD_WIDTH * 2; ++i) {
+        Info& info = linkInfo[i];
+        Link& link = i < 8 ? b->getLink(char('a' + i)) : b->getLink(char('A' + i - 8));
         if (info.downloaded) {
             continue;
         }
-        if (link.downloadStatus() != DownloadStatus::NotDownloaded) {
-            info.downloaded = true;
-            updateTile(info.x, info.y, '.');
-            continue;
-        }
-        if (info.x != link.getX() || info.y != link.getY()) {
+        if (info.x != link.getX() || info.y != link.getY() || info.revealed != link.isRevealed()) {
             updateTile(info.x, info.y, '.');
             updateTile(link.getX(), link.getY(), link.getChar(), link.isRevealed(), link.getIsData());
             info.x = link.getX();
             info.y = link.getY();
+            info.revealed = link.isRevealed();
         }
     }
 
-    //Update Player 2 information
+    //Update Player information
     for (int i = 0; i < 8; ++i) {
         string updated = playerDisplayInfo(i < 4 ? b->getPlayer1() : b->getPlayer2(), i % 4, players_turn);
         if (updated != playerInfo[i]) {

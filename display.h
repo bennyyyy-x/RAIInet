@@ -28,15 +28,17 @@ class GraphicalDisplay : public Observer {
     class Info {
         int x, y;
         bool downloaded;
+        bool revealed;
         friend class GraphicalDisplay;
     public:
-        Info(int x, int y, bool downloaded);
+        Info(int x, int y, bool downloaded, bool revealed);
     };
 
     vector<Info> linkInfo;
     vector<string> playerInfo;
+
     Info getInfo(char link);
-    void updateCoord(char link, int x, int y, bool downloaded);
+    void updateCoord(char link, int x, int y, bool downloaded, bool revealed);
 
 public:
     // Constructor should draw out the base board
