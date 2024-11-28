@@ -46,6 +46,7 @@ int Player::getVirus() const { return virus; }
 int Player::getPlayerId() const { return player_id; }
 
 bool Player::useAbility(int id, Board& board, vector<string> params) {
+    cout << "In useAbility, id = " << id << endl; 
     id--;
     if (cards[id]->isUsed()) {
         return false;
@@ -83,5 +84,5 @@ void Player::printAbility() const {
 }
 
 AbilityName Player::getAbilityName(int id) {
-    return cards[id]->getName();
+    return cards[id - 1]->getName();
 }

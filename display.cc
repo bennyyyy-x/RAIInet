@@ -232,8 +232,6 @@ string GraphicalDisplay::playerDisplayInfo(Player& player, int info_type, int pl
 }
 
 void GraphicalDisplay::notify(int players_turn) {
-    cout << "In Graphical Notify" << endl;
-
     if (players_turn == 1) {
         w.drawString(70, 20 , "PLAYER 1", Xwindow::Red);
         w.drawString(70, 120 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "PLAYER 2", Xwindow::White);

@@ -3,6 +3,7 @@
 #include "constants.h"
 #include <cstdlib>
 #include <ctime>
+#include <iostream>
 
 using namespace std;
 
@@ -26,7 +27,8 @@ bool LinkBoost::activate(Player& player, Board& board, vector<string> params) {
 Firewall::Firewall() : Ability{AbilityName::FIREWALL} {}
 
 bool Firewall::activate(Player& player, Board& board, vector<string> params) {
-    int x = params[0][0], y = params[1][0];
+    int x = stoi(params[0]), y = stoi(params[1]);
+    cout << "x = " << x << " y = " << y << endl;
     FirewallStatus wallOwner;
     if (player.getPlayerId() == 1) {
         wallOwner = Player1s;
