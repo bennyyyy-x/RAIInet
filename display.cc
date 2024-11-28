@@ -237,7 +237,7 @@ string GraphicalDisplay::playerDisplayInfo(Player& player, int info_type, int pl
     return txt;
 }
 
-void GraphicalDisplay::notify(int players_turn) { // TODO graphical display firewall
+void GraphicalDisplay::notify(int players_turn) {
     if (players_turn == 1) {
         w.drawString(70, 20 , "PLAYER 1", Xwindow::Red);
         w.drawString(70, 120 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "PLAYER 2", Xwindow::White);

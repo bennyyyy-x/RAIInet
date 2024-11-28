@@ -132,7 +132,7 @@ Board::Board(string link1_string, string link2_string, string ability1, string a
             tiles[i][0].setChar(char('A' + i));
             tiles[i][BOARD_WIDTH - 1].setChar(char('a' + i));
         }
-    } // TODO Player construction
+    }
 }
 
 
