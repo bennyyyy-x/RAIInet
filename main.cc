@@ -73,12 +73,15 @@ int main(int argc, char* argv[]) {
         board->attach(textDisplay);
     } else {
         graphicalDisplay = make_shared<GraphicalDisplay>(board, BOARD_WIDTH_GRAPH, 130 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y);
+        board->attach(graphicalDisplay);
     }
 
     stack<shared_ptr<istream>> input_streams;
     input_streams.push(make_shared<istream>(cin.rdbuf()));
     int players_turn = 1;
     bool ability_used = false;
+    board->render(players_turn); // Render initially
+    
     while (!input_streams.empty()) {
         shared_ptr<istream> in = input_streams.top();
         if (in->fail()) {

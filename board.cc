@@ -174,12 +174,14 @@ void Board::download(DownloadStatus status, const Link& link) {
 MoveStatus move_helper(Link& link, Direction dir, Board& board) {
     // Cannot move downloaded link
     if (link.downloadStatus() != NotDownloaded) {
+        cout << "Cannot move downloaded link" << endl;
         return MoveStatus::IllegalMove;
     }
 
     int tmp_x = link.getX() + convertToX(dir) * (link.isBoosted() ? 2 : 1); // Move with boost
     int tmp_y = link.getY() + convertToY(dir) * (link.isBoosted() ? 2 : 1);
     if (tmp_x < 0 || tmp_x > BOARD_WIDTH - 1) { // Moves off side edge (Illegal)
+        cout << "Move off side edge" << endl;
         return MoveStatus::IllegalMove;
     }
     
@@ -188,12 +190,14 @@ MoveStatus move_helper(Link& link, Direction dir, Board& board) {
     char other_c = destination.getChar();
     if (tmp_y < 0) { // Moves off bottom edge
         if (isupper(c)) {
+            cout << "bottom edge illegal" << endl;
             return MoveStatus::IllegalMove; // Illegal
         }
         link.setDownload(DownloadStatus::ByPlayer1);
         board.download(DownloadStatus::ByPlayer1, link);
     } else if (tmp_y >= BOARD_WIDTH) { // Moves off top edge
         if (islower(c)) {
+            cout << "top edge illegal" << endl;
             return MoveStatus::IllegalMove; // Illegal
         }
         link.setDownload(DownloadStatus::ByPlayer2);
@@ -202,19 +206,24 @@ MoveStatus move_helper(Link& link, Direction dir, Board& board) {
 
     if (tmp_y == 0 && (tmp_x == 3 || tmp_x == 4)) { // Bottom server ports
         if (isupper(c)) {
+            cout << "bottom server port illegal" << endl;
             return MoveStatus::IllegalMove; // Illegal
         }
         link.setDownload(DownloadStatus::ByPlayer2);
         board.download(DownloadStatus::ByPlayer2, link);
     } else if (tmp_y == BOARD_WIDTH - 1 && (tmp_x == 3 || tmp_x == 4)) { // Top server ports
         if (islower(c)) {
+            cout << "top server port illegal" << endl;
             return MoveStatus::IllegalMove; // Illegal
         }
         link.setDownload(DownloadStatus::ByPlayer1);
         board.download(DownloadStatus::ByPlayer1, link);
     }
 
-    if (isPlayer1Link(c) == isPlayer1Link(other_c)) { // Same player's link
+    if (isLink(other_c) && isPlayer1Link(c) == isPlayer1Link(other_c)) { // Same player's link
+        // cout << "c = " << c << " other_c = " << other_c << endl;
+        // cout << "tmp_x = " << tmp_x << " tmp_y = " << tmp_y << endl;
+        cout << "same player link" << endl;
         return MoveStatus::IllegalMove; // Illegal
     }
 

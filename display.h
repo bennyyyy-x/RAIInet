@@ -47,6 +47,7 @@ public:
     void message(string msg) override;
 
     string playerDisplayInfo(Player& player, int info_type, int players_turn);
+    void updateTile(int x, int y, char link, bool isRevealed = false, bool isData = false);
 };
 
 #endif // DISPLAY_H_

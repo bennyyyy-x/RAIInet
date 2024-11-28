@@ -80,7 +80,17 @@ void TextDisplay::message(string message) {
     cout << message << endl;
 }
 
+int convertX(int x) {
+    return x * TILE_WIDTH + (x + 1) * LINE_WIDTH + BOARD_CORNER_X;
+}
+
+int convertY(int y) {
+    y = 7 - y;
+    return y * TILE_WIDTH + (y + 1) * LINE_WIDTH + BOARD_CORNER_Y;
+}
+
 GraphicalDisplay::Info::Info(int x, int y, bool downloaded) : x{x}, y{y}, downloaded{downloaded} {}
+
 
 GraphicalDisplay::Info GraphicalDisplay::getInfo(char link) {
     if (isPlayer1Link(link)) {
@@ -89,6 +99,7 @@ GraphicalDisplay::Info GraphicalDisplay::getInfo(char link) {
         return linkInformation[link - 'A' + 8];
     }
 }
+
 
 void GraphicalDisplay::updateCoord(char link, int x, int y, bool downloaded) {
     if (isPlayer1Link(link)) {
@@ -101,6 +112,7 @@ void GraphicalDisplay::updateCoord(char link, int x, int y, bool downloaded) {
         linkInformation[link - 'A' + 8].downloaded = downloaded;
     }
 }
+
 
 GraphicalDisplay::GraphicalDisplay(shared_ptr<Board> b, int width, int height) : b{b}, w{width, height} {
     for (int i = 0; i < 8; ++i) {
@@ -121,19 +133,19 @@ GraphicalDisplay::GraphicalDisplay(shared_ptr<Board> b, int width, int height) :
 
     w.fillRectangle(BOARD_CORNER_X, BOARD_CORNER_Y - 5, BOARD_WIDTH_GRAPH, 5, Xwindow::Black); // Top edge
     w.fillRectangle(BOARD_CORNER_X, BOARD_CORNER_Y, BOARD_WIDTH_GRAPH, BOARD_WIDTH_GRAPH, Xwindow::Black); // Entire board
-    for (int y = 0; y < BOARD_WIDTH; ++y) {
-        for (int x = 0; x < BOARD_WIDTH; ++x) {
 
-            
-            int corner_x = (x + 1) * LINE_WIDTH + x * TILE_WIDTH + BOARD_CORNER_X;
-            int corner_y = (y + 1) * LINE_WIDTH + y * TILE_WIDTH + BOARD_CORNER_Y;
+    for (int x = 0; x < BOARD_WIDTH; ++x) {
+        for (int y = 0; y < BOARD_WIDTH; ++y) {
             if ((x == 3 || x == 4) && (y == 0 || y == 7)) {
-                w.fillRectangle(corner_x, corner_y, TILE_WIDTH, TILE_WIDTH, Xwindow::Blue); // Server port
-            } else {
-                w.fillRectangle(corner_x, corner_y, TILE_WIDTH, TILE_WIDTH, Xwindow::White);
+                w.fillRectangle(convertX(x), convertY(y), TILE_WIDTH, TILE_WIDTH, Xwindow::Blue); // Server port
+                continue;
             }
+            char c = b->getTile(x, y).getChar();
+            Link& link = b->getLink(c);
+            updateTile(x, y, c, link.isRevealed(), link.getIsData());
         }
     }
+
     w.fillRectangle(BOARD_CORNER_X, BOARD_CORNER_Y + BOARD_WIDTH_GRAPH, BOARD_WIDTH_GRAPH, 5, Xwindow::Black); // Bottom edge
 
     w.fillRectangle(0, 100 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, BOARD_WIDTH_GRAPH, 30, Xwindow::Black);
@@ -144,6 +156,31 @@ GraphicalDisplay::GraphicalDisplay(shared_ptr<Board> b, int width, int height) :
     w.drawString(10, 90 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "e: ?  f: ?  g: ?  h: ? ", Xwindow::Black);
 
 }
+
+
+void GraphicalDisplay::updateTile(int x, int y, char link, bool isRevealed, bool isData) {
+    if (x < 0 || x >= BOARD_WIDTH || y < 0 || y >= BOARD_WIDTH) {
+        return;
+    }
+    if (link == '.') { // empty tile
+        w.fillRectangle(convertX(x), convertY(y), TILE_WIDTH, TILE_WIDTH, Xwindow::White);
+        return;
+    }
+    if (!isLink(link)) {
+        return;
+    }
+    w.fillRectangle(convertX(x), convertY(y), TILE_WIDTH, TILE_WIDTH, Xwindow::White);
+    int color = Xwindow::Black;
+    if (isRevealed) {
+        if (isData) {
+            color = Xwindow::Green;
+        } else {
+            color = Xwindow::Red;
+        }
+    }
+    w.drawString(convertX(x) + CHAR_OFF_X, convertY(y) + CHAR_OFF_Y, string(1, link), color);
+}
+
 
 string GraphicalDisplay::playerDisplayInfo(Player& player, int info_type, int players_turn) {
     string txt = "";
@@ -195,9 +232,54 @@ string GraphicalDisplay::playerDisplayInfo(Player& player, int info_type, int pl
 }
 
 void GraphicalDisplay::notify(int players_turn) {
+    cout << "In Graphical Notify" << endl;
+    if (players_turn == 1) {
+        w.drawString(70, 20 , "PLAYER 1", Xwindow::Red);
+        w.drawString(70, 120 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "PLAYER 2", Xwindow::White);
+    } else {
+        w.drawString(70, 120 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "PLAYER 2", Xwindow::Red);
+        w.drawString(70, 20 , "PLAYER 1", Xwindow::White);
+    }
 
+    for (int i = 0; i < BOARD_WIDTH; ++i) {
+        Info& info = linkInformation[i];
+        Link& link = b->getLink(char('a' + i));
+        if (info.downloaded) {
+            continue;
+        }
+        if (link.downloadStatus() != DownloadStatus::NotDownloaded) {
+            info.downloaded = true;
+            updateTile(info.x, info.y, '.');
+            continue;
+        }
+        if (info.x != link.getX() || info.y != link.getY()) {
+            updateTile(info.x, info.y, '.');
+            updateTile(link.getX(), link.getY(), link.getChar(), link.isRevealed(), link.getIsData());
+            info.x = link.getX();
+            info.y = link.getY();
+        }
+    }
+
+    for (int i = 0; i < BOARD_WIDTH; ++i) {
+        Info& info = linkInformation[i + 8];
+        Link& link = b->getLink(char('A' + i));
+        if (info.downloaded) {
+            continue;
+        }
+        if (link.downloadStatus() != DownloadStatus::NotDownloaded) {
+            info.downloaded = true;
+            updateTile(info.x, info.y, '.');
+            continue;
+        }
+        if (info.x != link.getX() || info.y != link.getY()) {
+            updateTile(info.x, info.y, '.');
+            updateTile(link.getX(), link.getY(), link.getChar(), link.isRevealed(), link.getIsData());
+            info.x = link.getX();
+            info.y = link.getY();
+        }
+    }
 }
 
 void GraphicalDisplay::message(string msg) {
-
+    cout << msg << endl;
 }
