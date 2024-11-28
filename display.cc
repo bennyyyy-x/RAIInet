@@ -177,6 +177,8 @@ void GraphicalDisplay::updateTile(int x, int y, char link, bool isRevealed, bool
         } else {
             color = Xwindow::Red;
         }
+        //TODO after a link is revealed - data is correctly displayed as green but virus not displayed as red
+        //TODO mayhaps, calling board right after link is scanned does not update the colours
     }
     w.drawString(convertX(x) + CHAR_OFF_X, convertY(y) + CHAR_OFF_Y, string(1, link), color);
 }
@@ -240,6 +242,7 @@ void GraphicalDisplay::notify(int players_turn) {
         w.drawString(70, 20 , "PLAYER 1", Xwindow::White);
     }
 
+    //Update player1 link info
     for (int i = 0; i < BOARD_WIDTH; ++i) {
         Info& info = linkInfo[i];
         Link& link = b->getLink(char('a' + i));
@@ -259,6 +262,7 @@ void GraphicalDisplay::notify(int players_turn) {
         }
     }
 
+    //Update player 2 link info
     for (int i = 0; i < BOARD_WIDTH; ++i) {
         Info& info = linkInfo[i + 8];
         Link& link = b->getLink(char('A' + i));
@@ -278,7 +282,7 @@ void GraphicalDisplay::notify(int players_turn) {
         }
     }
 
-    // update player information
+    //Update Player 2 information
     for (int i = 0; i < 8; ++i) {
         string updated = playerDisplayInfo(i < 4 ? b->getPlayer1() : b->getPlayer2(), i % 4, players_turn);
         if (updated != playerInfo[i]) {

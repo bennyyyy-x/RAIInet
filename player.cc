@@ -52,6 +52,7 @@ bool Player::useAbility(int id, Board& board, vector<string> params) {
         return false;
     }
     bool success = cards[id]->activate(*this, board, params);
+    cout << "after success??" << endl;
     if (success) {
         cards[id]->setUsed();
     }
