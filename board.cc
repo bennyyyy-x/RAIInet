@@ -372,3 +372,13 @@ Link& Board::getLink(char link) {
 Tile& Board::getTile(int x, int y) {
     return tiles[x][y];
 }
+
+FirewallInfo::FirewallInfo(int x, int y, char c) : x{x}, y{y}, c{c} {}
+
+void Board::addFirewall(int x, int y, char c) {
+    firewallInfo.push_back({x, y, c});
+}
+
+vector<FirewallInfo>& Board::getFirewallInfo() {
+    return firewallInfo;
+}

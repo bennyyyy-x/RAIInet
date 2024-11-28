@@ -6,8 +6,9 @@
 using namespace std;
 
 Player::Player(int id, string abilities) : player_id{id}, data{0}, virus{0} {
-    // TODO construct the abilities
-    for (char c : abilities) {
+    int min_len = abilities.length() < 5 ? abilities.length() : 5;
+    for (int i = 0; i < min_len; ++i) {
+        char c = abilities[i];
         if (c == 'L') {
             cards.push_back(make_unique<LinkBoost>());
         } else if (c == 'F') {
@@ -37,7 +38,15 @@ void Player::download(const Link& link) {
     }
 }
 
-int Player::getNumAbilities() const { return cards.size(); }
+int Player::getNumAbilities() const {
+    int count = 0;
+    for (size_t i = 0; i < cards.size(); ++i) {
+        if (!cards[i]->isUsed()) {
+            count++;
+        }
+    }
+    return count;
+}
 
 int Player::getData() const { return data; }
 

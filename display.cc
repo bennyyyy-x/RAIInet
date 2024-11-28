@@ -166,12 +166,14 @@ void GraphicalDisplay::updateTile(int x, int y, char link, bool isRevealed, bool
         w.fillRectangle(convertX(x), convertY(y), TILE_WIDTH, TILE_WIDTH, Xwindow::White);
         return;
     }
-    if (!isLink(link)) {
+    if (!isLink(link) && link != 'w' && link != 'm') {
         return;
     }
     w.fillRectangle(convertX(x), convertY(y), TILE_WIDTH, TILE_WIDTH, Xwindow::White);
     int color = Xwindow::Black;
-    if (isRevealed) {
+    if (link == 'w' || link == 'm') {
+        color = Xwindow::Blue;
+    } else if (isRevealed) {
         if (isData) {
             color = Xwindow::Green;
         } else {
@@ -231,13 +233,17 @@ string GraphicalDisplay::playerDisplayInfo(Player& player, int info_type, int pl
     return txt;
 }
 
-void GraphicalDisplay::notify(int players_turn) {
+void GraphicalDisplay::notify(int players_turn) { // TODO graphical display firewall
     if (players_turn == 1) {
         w.drawString(70, 20 , "PLAYER 1", Xwindow::Red);
         w.drawString(70, 120 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "PLAYER 2", Xwindow::White);
     } else {
         w.drawString(70, 120 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "PLAYER 2", Xwindow::Red);
         w.drawString(70, 20 , "PLAYER 1", Xwindow::White);
+    }
+
+    for (FirewallInfo info : b->getFirewallInfo()) {
+        updateTile(info.x, info.y, info.c);
     }
 
     for (int i = 0; i < BOARD_WIDTH; ++i) {
