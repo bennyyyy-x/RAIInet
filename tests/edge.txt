@@ -1,0 +1,16 @@
+move a down
+move A up
+move a down
+move A up
+move a down
+move A up
+move a right
+move A up
+move a right
+move A up
+move a left
+move A up
+move a left
+move A up
+move a right
+move A up
