@@ -80,6 +80,10 @@ void TextDisplay::message(string message) {
     cout << message << endl;
 }
 
+void TextDisplay::end(int winner) {
+    cout << "WINNER: PLAYER " << winner << endl;
+}
+
 int convertX(int x) {
     return x * TILE_WIDTH + (x + 1) * LINE_WIDTH + BOARD_CORNER_X;
 }
@@ -317,4 +321,8 @@ void GraphicalDisplay::notify(int players_turn) {
 
 void GraphicalDisplay::message(string msg) {
     cout << msg << endl;
+}
+
+void GraphicalDisplay::end(int winner) {
+    w.fillRectangle(0, convertY(5), BOARD_WIDTH_GRAPH, 50, Xwindow::Red);
 }

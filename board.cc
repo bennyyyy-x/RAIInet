@@ -70,6 +70,18 @@ void Subject::sendMessage(string msg) {
 }
 
 
+void Subject::endGame(int winner) {
+    for (auto it = observers.begin(); it != observers.end();) {
+        if (auto ptr = it->lock()) {
+            ptr->end(winner);
+            ++it;
+        } else {
+            observers.erase(it);
+        }
+    }
+}
+
+
 // Convert int to link string
 string getLinkString(int x) {
     return (x < 4 ? "V" : "D") + to_string(x % 4 + 1);

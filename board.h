@@ -27,8 +27,8 @@ public:
     // Calls the `notify` function of Observers, then the displays will
     // update itself by obtaining `Board`'s status
     void notifyObservers(int players_turn);
-
     void sendMessage(string message);
+    void endGame(int winner);
 };
 
 class FirewallInfo {

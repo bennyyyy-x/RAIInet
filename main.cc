@@ -37,11 +37,11 @@ Direction convertDir(string dir) {
     throw invalid_argument("direction is not one of up/down/left/right");
 }
 
-bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<istream> in, int& players_turn, bool& hijack_enabled);
+bool abilityHelper(shared_ptr<Board> board, Player& player, int id, shared_ptr<istream> in, int& players_turn, bool& hijack_enabled);
 
-int winner(Board& board) {
-    Player& player1 = board.getPlayer1();
-    Player& player2 = board.getPlayer2();
+int gameEndCheck(shared_ptr<Board> board) {
+    Player& player1 = board->getPlayer1();
+    Player& player2 = board->getPlayer2();
     if (player1.getData() == 4 || player2.getVirus() == 4) {
         return 1;
     } else if (player1.getVirus() == 4 || player2.getData() == 4) {
@@ -53,7 +53,7 @@ int winner(Board& board) {
 int main(int argc, char* argv[]) {
     string ability1 = "LFDSP", ability2 = "LFDSP";
     string link1 = "", link2 = "";
-    bool graphical_display = false;
+    bool graphics_enabled = false;
 
     for (int i = 1; i < argc; ++i) {
         string arg = argv[i];
@@ -74,14 +74,14 @@ int main(int argc, char* argv[]) {
                 link2 += tmp;
             }
         } else if (arg == "-graphics") {
-            graphical_display = true;
+            graphics_enabled = true;
         }
     }
 
     shared_ptr<Board> board = make_shared<Board>(link1, link2, ability1, ability2);
     shared_ptr<TextDisplay> textDisplay;
     shared_ptr<GraphicalDisplay> graphicalDisplay;
-    if (!graphical_display) {
+    if (!graphics_enabled) {
         textDisplay = make_shared<TextDisplay>(board);
         board->attach(textDisplay);
     } else {
@@ -96,6 +96,7 @@ int main(int argc, char* argv[]) {
     bool hijack_enabled = false;
     board->render(players_turn); // Render initially
     
+    string command;
     while (!input_streams.empty()) {
         shared_ptr<istream> in = input_streams.top();
         if (in->fail()) {
@@ -103,7 +104,6 @@ int main(int argc, char* argv[]) {
             in->ignore();
         }
         input_streams.pop();
-        string command;
 
         while (*in >> command) {
             command = tolower(command);
@@ -155,6 +155,15 @@ int main(int argc, char* argv[]) {
                     ability_used = false;
                     hijack_enabled = false;
                     board->render(players_turn); // Refresh the board after each move
+
+                    int winner = gameEndCheck(board);
+                    if (winner != 0) {
+                        board->endGame(winner);
+                        while (!input_streams.empty()) {
+                            input_streams.pop();
+                        }
+                        break;
+                    }
                 } else {
                     board->sendMessage("Move failed");
                 }
@@ -175,7 +184,7 @@ int main(int argc, char* argv[]) {
                     input_streams.push(in);
                     break;
                 }
-                ability_used = ability_helper(board, player, id, in, players_turn, hijack_enabled);
+                ability_used = abilityHelper(board, player, id, in, players_turn, hijack_enabled);
                 if (ability_used) {
                     board->render(players_turn); // render after applying ability
                 } else {
@@ -189,6 +198,9 @@ int main(int argc, char* argv[]) {
                 while (!input_streams.empty()) {
                     input_streams.pop();
                 }
+                // Make this flag false so when using quit command
+                // the screen will not keep being displayed
+                graphics_enabled = false;
                 break;
             }
 
@@ -198,10 +210,18 @@ int main(int argc, char* argv[]) {
             }
         }
     }
+
+    // Keep displaying graphical end screen
+    while (graphics_enabled && cin >> command) {
+        command = tolower(command);
+        if (command == "quit" || command == "q") {
+            break;
+        }
+    }
 }
 
 // return bool whether ability was applied
-bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<istream> in, int& players_turn, bool& hijack_enabled) {
+bool abilityHelper(shared_ptr<Board> board, Player& player, int id, shared_ptr<istream> in, int& players_turn, bool& hijack_enabled) {
     AbilityName ability = player.getAbilityName(id);
     char link, link1, link2;
     int x, y;

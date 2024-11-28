@@ -11,6 +11,7 @@ class Observer {
 public:
     virtual void notify(int players_turn) = 0;
     virtual void message(string msg) = 0;
+    virtual void end(int winner) = 0;
 };
 
 class TextDisplay : public Observer {
@@ -19,6 +20,7 @@ public:
     TextDisplay(shared_ptr<Board> b);
     void notify(int players_turn) override;
     void message(string msg) override;
+    void end(int winner) override;
 };
 
 class GraphicalDisplay : public Observer {
@@ -49,6 +51,7 @@ public:
     // also depending on players_turn, cover or show the type and strength of links
     void notify(int players_turn) override;
     void message(string msg) override;
+    void end(int winner) override;
 
     string playerDisplayInfo(Player& player, int info_type, int players_turn);
     void updateTile(int x, int y, char link, bool isRevealed = false, bool isData = false);
