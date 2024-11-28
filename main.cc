@@ -194,7 +194,7 @@ bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<
             if (*in >> link) {
                 if ((players_turn == 1 && isPlayer1Link(link))
                     || (players_turn == 2 && isPlayer2Link(link))) {
-                    return player.useAbility(id, *board, {to_string(link)});
+                    return player.useAbility(id, *board, {string(1, link)});
                 }
             }
             board->sendMessage("Invalid link ID for link boost");
@@ -220,7 +220,7 @@ bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<
             if (*in >> link) {
                 if ((players_turn == 2 && isPlayer1Link(link))
                     || (players_turn == 1 && isPlayer2Link(link))) {
-                    return player.useAbility(id, *board, {to_string(link)});
+                    return player.useAbility(id, *board, {string(1, link)});
                 }
             }
             board->sendMessage("Invalid link for Download");
@@ -230,7 +230,7 @@ bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<
             if (*in >> link) {
                 if ((players_turn == 1 && isPlayer1Link(link))
                     || (players_turn == 2 && isPlayer2Link(link))) {
-                    return player.useAbility(id, *board, {to_string(link)});
+                    return player.useAbility(id, *board, {string(1, link)});
                 }
             }
             board->sendMessage("Invalid link for Polarize");
@@ -240,7 +240,7 @@ bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<
             if (*in >> link) {
                 if ((players_turn == 2 && isPlayer1Link(link))
                     || (players_turn == 1 && isPlayer2Link(link))) {
-                    return player.useAbility(id, *board, {to_string(link)});
+                    return player.useAbility(id, *board, {string(1, link)});
                 }
             }
             board->sendMessage("Invalid link for Scan");
@@ -250,7 +250,7 @@ bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<
             if (*in >> link1 >> link2) {
                 if ((isPlayer1Link(link1) && isPlayer2Link(link2))
                  || (isPlayer2Link(link1) && isPlayer1Link(link2))) {
-                    return player.useAbility(id, *board, {to_string(link1), to_string(link2)});
+                    return player.useAbility(id, *board, {string(1, link1), string(1, link2)});
                 }
             }
             board->sendMessage("Invalid links for Exchange");
@@ -259,7 +259,7 @@ bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<
         case AbilityName::TELEPORT:
             if (*in >> link) {
                 if (isLink(link)) {
-                    return player.useAbility(id, *board, {to_string(link)});
+                    return player.useAbility(id, *board, {string(1, link)});
                 }
             }
             board->sendMessage("Invalid input for Teleport");
