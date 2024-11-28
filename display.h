@@ -45,6 +45,8 @@ public:
     // also depending on players_turn, cover or show the type and strength of links
     void notify(int players_turn) override;
     void message(string msg) override;
+
+    string playerDisplayInfo(Player& player, int info_type, int players_turn);
 };
 
 #endif // DISPLAY_H_

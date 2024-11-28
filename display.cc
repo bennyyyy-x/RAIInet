@@ -114,7 +114,7 @@ GraphicalDisplay::GraphicalDisplay(shared_ptr<Board> b, int width, int height) :
 
     w.fillRectangle(0, 0, BOARD_WIDTH_GRAPH, 30, Xwindow::Black);
     w.drawString(70, 20 , "PLAYER 1", Xwindow::White);
-    w.drawString(10, 50, "DOWNLOADED:   1D, 3V", Xwindow::Black);
+    w.drawString(10, 50, "DOWNLOADED:   0D, 0V", Xwindow::Black);
     w.drawString(10, 70, "ABILITIES:    5", Xwindow::Black);
     w.drawString(10, 90, "a: V1 b: D4 c: V3 d: V2", Xwindow::Black);
     w.drawString(10, 110, "e: D3 f: V4 g: D2 h: D1", Xwindow::Black);
@@ -138,11 +138,60 @@ GraphicalDisplay::GraphicalDisplay(shared_ptr<Board> b, int width, int height) :
 
     w.fillRectangle(0, 100 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, BOARD_WIDTH_GRAPH, 30, Xwindow::Black);
     w.drawString(70, 120 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "PLAYER 2", Xwindow::White);
-    w.drawString(10, 30 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "DOWNLOADED:   1D, 3V", Xwindow::Black);
+    w.drawString(10, 30 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "DOWNLOADED:   0D, 0V", Xwindow::Black);
     w.drawString(10, 50 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "ABILITIES:    5", Xwindow::Black);
-    w.drawString(10, 70 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "a: V1 b: D4 c: V3 d: V2", Xwindow::Black);
-    w.drawString(10, 90 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "e: D3 f: V4 g: D2 h: D1", Xwindow::Black);
+    w.drawString(10, 70 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "a: ?  b: ?  c: ?  d: ? ", Xwindow::Black);
+    w.drawString(10, 90 + BOARD_WIDTH_GRAPH + BOARD_CORNER_Y, "e: ?  f: ?  g: ?  h: ? ", Xwindow::Black);
 
+}
+
+string GraphicalDisplay::playerDisplayInfo(Player& player, int info_type, int players_turn) {
+    string txt = "";
+    if (info_type == 0) { //Downloaded links info
+        txt += "DOWNLOADED:   ";
+        txt += to_string(player.getData()) + "D, ";
+        txt += to_string(player.getVirus()) + "V";
+        return txt;
+    } else if (info_type == 1) { //Num abilities left info
+        txt += "ABILITIES:   " + to_string(player.getNumAbilities());
+        return txt;
+    } else { //Displaying links info
+        char start, end;
+        if (info_type == 2) { //Links display first line (a-d)
+            start = 'a';
+            end = 'd';
+        } else {              //Links display 2nd line (e-h)
+            start = 'e';
+            end = 'h';
+        }
+        //If printing for player 2, convert to uppercase
+        if (player.getPlayerId() == 2) {
+            start -= ('a' - 'A');
+            end -= ('a' - 'A');
+        }
+
+        for (char c = start; c <= end; ++c) {
+            txt += to_string(c) + ": ";
+
+            bool revealSafe = false;
+            if (players_turn == player.getPlayerId()) { //if link owners turn
+                revealSafe = true;
+            } else if (b->getLink(c).isRevealed()) { //or if link is revealed
+                revealSafe = true;
+            }
+            if (revealSafe) {
+                if (b->getLink(c).getIsData()) {
+                    txt += "D";
+                } else {
+                    txt += "V";
+                }
+                txt += b->getLink(c).getStrength() + " ";
+            } else {
+                txt += "?  ";
+            }
+        }
+    }
+    return txt;
 }
 
 void GraphicalDisplay::notify(int players_turn) {
