@@ -249,7 +249,16 @@ void GraphicalDisplay::notify(int players_turn) {
     }
 
     for (FirewallInfo info : b->getFirewallInfo()) {
-        updateTile(info.x, info.y, info.c);
+        bool noLinkOnFirewall = true;
+        for (Info linkInfo : linkInfo) {
+            if (info.x == linkInfo.x && info.y == linkInfo.y && linkInfo.downloaded == false) {
+                noLinkOnFirewall = false;
+                break;
+            }
+        }
+        if (noLinkOnFirewall) {
+            updateTile(info.x, info.y, info.c);
+        }
     }
 
     for (int i = 0; i < BOARD_WIDTH * 2; ++i) {
