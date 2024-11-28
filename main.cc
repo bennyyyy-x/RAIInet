@@ -249,7 +249,7 @@ bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<
         case AbilityName::Teleport:
             if (*in >> link) {
                 if (isLink(link)) {
-                    return player.useAbility(id, *board, {to_string(link), to_string(x), to_string(y)});
+                    return player.useAbility(id, *board, {to_string(link)});
                 }
             }
             board->sendMessage("Invalid input for Teleport");
