@@ -29,9 +29,10 @@ class GraphicalDisplay : public Observer {
         int x, y;
         bool downloaded;
         bool revealed;
+        bool isData;
         friend class GraphicalDisplay;
     public:
-        Info(int x, int y, bool downloaded, bool revealed);
+        Info(int x, int y, bool downloaded, bool revealed, bool isData);
     };
 
     vector<Info> linkInfo;

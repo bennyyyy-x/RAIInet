@@ -90,8 +90,8 @@ int convertY(int y) {
 }
 
 
-GraphicalDisplay::Info::Info(int x, int y, bool downloaded, bool revealed)
-    : x{x}, y{y}, downloaded{downloaded}, revealed{revealed} {}
+GraphicalDisplay::Info::Info(int x, int y, bool downloaded, bool revealed, bool isData)
+    : x{x}, y{y}, downloaded{downloaded}, revealed{revealed}, isData{isData} {}
 
 
 GraphicalDisplay::Info GraphicalDisplay::getInfo(char link) {
@@ -121,11 +121,19 @@ void GraphicalDisplay::updateCoord(char link, int x, int y, bool downloaded, boo
 GraphicalDisplay::GraphicalDisplay(shared_ptr<Board> b, int width, int height) : b{b}, w{width, height} {
     for (int i = 0; i < 8; ++i) {
         Link& link = b->getLink(char('a' + i));
-        linkInfo.push_back({link.getX(), link.getY(), link.downloadStatus() != DownloadStatus::NotDownloaded, false});
+        linkInfo.push_back({link.getX(),
+                            link.getY(),
+                            link.downloadStatus() != DownloadStatus::NotDownloaded,
+                            link.isRevealed(),
+                            link.getIsData()});
     }
     for (int i = 0; i < 8; ++i) {
         Link& link = b->getLink(char('A' + i));
-        linkInfo.push_back({link.getX(), link.getY(), link.downloadStatus() != DownloadStatus::NotDownloaded, false});
+        linkInfo.push_back({link.getX(),
+                            link.getY(),
+                            link.downloadStatus() != DownloadStatus::NotDownloaded,
+                            link.isRevealed(),
+                            link.getIsData()});
     }
 
     w.fillRectangle(0, 0, BOARD_WIDTH_GRAPH, 30, Xwindow::Black);
@@ -282,16 +290,16 @@ void GraphicalDisplay::notify(int players_turn) {
         if (info.downloaded) {
             continue;
         }
-        if (info.x != link.getX() || info.y != link.getY() || info.revealed != link.isRevealed()) {
+        if (info.x != link.getX() || info.y != link.getY() || info.revealed != link.isRevealed() || info.isData != link.getIsData()) {
             int x = info.x, y = info.y;
             info.x = link.getX();
             info.y = link.getY();
             info.revealed = link.isRevealed();
+            info.isData = link.getIsData();
             if (noLinkOnSquare(x, y)) {
                 updateTile(x, y, '.');
             }
-            updateTile(link.getX(), link.getY(), link.getChar(), link.isRevealed(), link.getIsData());
-            
+            updateTile(link.getX(), link.getY(), link.getChar(), link.isRevealed(), link.getIsData());   
         }
     }
 

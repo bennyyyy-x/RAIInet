@@ -103,7 +103,9 @@ int main(int argc, char* argv[]) {
                 *in >> filename;
                 shared_ptr<ifstream> fin = make_shared<ifstream>(filename);
                 input_streams.push(in);
-                input_streams.push(fin);
+                if (fin->is_open()) {
+                    input_streams.push(fin);
+                }
                 break;
 
             } else if (command == "move") {
