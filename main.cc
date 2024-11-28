@@ -39,6 +39,17 @@ Direction convertDir(string dir) {
 
 bool ability_helper(shared_ptr<Board> board, Player& player, int id, shared_ptr<istream> in, int& players_turn, bool& hijack_enabled);
 
+int winner(Board& board) {
+    Player& player1 = board.getPlayer1();
+    Player& player2 = board.getPlayer2();
+    if (player1.getData() == 4 || player2.getVirus() == 4) {
+        return 1;
+    } else if (player1.getVirus() == 4 || player2.getData() == 4) {
+        return 2;
+    }
+    return 0;
+}
+
 int main(int argc, char* argv[]) {
     string ability1 = "LFDSP", ability2 = "LFDSP";
     string link1 = "", link2 = "";

@@ -241,7 +241,7 @@ MoveStatus move_helper(Link& link, Direction dir, Board& board) {
             link.setDownload(ds);
             cout << "download5" << endl;
             board.download(ds, link);
-            board.getTile(link.getX(), link.getChar()).setChar('.');
+            board.getTile(link.getX(), link.getY()).setChar('.');
             return MoveStatus::DoNotNeedTileChange;
         }
     }
