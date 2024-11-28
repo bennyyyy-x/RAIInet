@@ -165,8 +165,9 @@ int main(int argc, char* argv[]) {
                     break;
                 }
                 ability_used = ability_helper(board, player, id, in, players_turn, hijack_enabled);
-                board->render(players_turn); // render after applying ability
-                if (!ability_used) {
+                if (ability_used) {
+                    board->render(players_turn); // render after applying ability
+                } else {
                     board->sendMessage("Unable to use ability");
                 }
 
