@@ -27,20 +27,20 @@ class GraphicalDisplay : public Observer {
     shared_ptr<Board> b;
     Xwindow w;
 
-    class Info {
+    class LinkInfo {
         int x, y;
         bool downloaded;
         bool revealed;
         bool isData;
-        friend class GraphicalDisplay;
     public:
-        Info(int x, int y, bool downloaded, bool revealed, bool isData);
+        LinkInfo(int x, int y, bool downloaded, bool revealed, bool isData);
+        friend class GraphicalDisplay;
     };
 
-    vector<Info> linkInfo;
+    vector<LinkInfo> linkInfo;
     vector<string> playerInfo;
 
-    Info getInfo(char link);
+    LinkInfo getInfo(char link);
     void updateCoord(char link, int x, int y, bool downloaded, bool revealed);
 
 public:

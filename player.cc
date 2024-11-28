@@ -6,7 +6,7 @@
 using namespace std;
 
 Player::Player(int id, string abilities) : player_id{id}, data{0}, virus{0} {
-    int min_len = abilities.length() < 5 ? abilities.length() : 5;
+    int min_len = abilities.length() < ABILITY_CARD_NUMS ? abilities.length() : ABILITY_CARD_NUMS;
     for (int i = 0; i < min_len; ++i) {
         char c = abilities[i];
         if (c == 'L') {
@@ -76,9 +76,8 @@ string convertAbilityName(AbilityName name) {
         case AbilityName::SCAN: return "Scan";
         case AbilityName::EXCHANGE: return "Exchange";
         case AbilityName::TELEPORT: return "Teleport";
-        case AbilityName::HIJACK: return "Hijack";
+        default: return "Hijack";
     }
-    return "Error";
 }
 
 void Player::printAbility() const {

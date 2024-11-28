@@ -115,11 +115,11 @@ int convertY(int y) {
 }
 
 
-GraphicalDisplay::Info::Info(int x, int y, bool downloaded, bool revealed, bool isData)
+GraphicalDisplay::LinkInfo::LinkInfo(int x, int y, bool downloaded, bool revealed, bool isData)
     : x{x}, y{y}, downloaded{downloaded}, revealed{revealed}, isData{isData} {}
 
 
-GraphicalDisplay::Info GraphicalDisplay::getInfo(char link) {
+GraphicalDisplay::LinkInfo GraphicalDisplay::getInfo(char link) {
     if (isPlayer1Link(link)) {
         return linkInfo[link - 'a'];
     } else {
@@ -273,7 +273,7 @@ string GraphicalDisplay::playerDisplayInfo(Player& player, int info_type, int pl
 }
 
 bool GraphicalDisplay::noLinkOnSquare(int x, int y) const {
-    for (Info linkInfo : linkInfo) {
+    for (LinkInfo linkInfo : linkInfo) {
         if (x == linkInfo.x && y == linkInfo.y && linkInfo.downloaded == false) {
             return false;
         }
@@ -297,7 +297,7 @@ void GraphicalDisplay::notify(int players_turn) {
     }
 
     for (int i = 0; i < BOARD_WIDTH * 2; ++i) {
-        Info& info = linkInfo[i];
+        LinkInfo& info = linkInfo[i];
         Link& link = i < 8 ? b->getLink(char('a' + i)) : b->getLink(char('A' + i - 8));
         if (info.downloaded) {
             continue;
@@ -310,7 +310,7 @@ void GraphicalDisplay::notify(int players_turn) {
     }
 
     for (int i = 0; i < BOARD_WIDTH * 2; ++i) {
-        Info& info = linkInfo[i];
+        LinkInfo& info = linkInfo[i];
         Link& link = i < 8 ? b->getLink(char('a' + i)) : b->getLink(char('A' + i - 8));
         if (info.downloaded) {
             continue;
