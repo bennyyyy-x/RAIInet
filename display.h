@@ -45,6 +45,8 @@ public:
     // also depending on players_turn, cover or show the type and strength of links
     void notify(int players_turn) override;
     void message(string msg) override;
+
+    void updateTile(int x, int y, char link, bool isRevealed = false, bool isData = false);
 };
 
 #endif // DISPLAY_H_
