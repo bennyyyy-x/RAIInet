@@ -1,0 +1,12 @@
+ability 1 a A
+move a down
+move A down
+ability 2 B b
+move b down
+move B down
+ability 3 c C
+move c down
+move C down
+ability 4 d D
+move d down
+move D up
